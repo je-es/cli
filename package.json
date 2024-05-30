@@ -1,6 +1,6 @@
 {
 	"name"				: "@je-es/cli",
-	"version"			: "0.0.4",
+	"version"			: "0.0.6",
 	"description"		: "An easy, fast and efficient way to create command line applications in Node JS",
 	"keywords"			: [ "je-es", "cli", "npm", "Maysara_Elshewehy" ],
 	"license"			: "MIT",
@@ -25,7 +25,6 @@
 
 	"publishConfig"		:
 	{
-		"registry": "https://npm.pkg.github.com/"
 	},
 
 	"repository"		:
