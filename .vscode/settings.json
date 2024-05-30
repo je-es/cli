@@ -1,0 +1,32 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "tsup.config.ts": true,
+        "package-lock.json": true,
+        "LICENSE": true,
+        "jest.config.js": true,
+        ".gitattributes": true,
+        "node_modules": true,
+        ".vscode": true,
+        "tsconfig.json": true,
+        ".gitignore": true,
+        ".npmignore": true
+    },
+    "hide-files.files": [
+        "tsup.config.ts",
+        "package-lock.json",
+        "LICENSE",
+        "jest.config.js",
+        ".gitattributes",
+        "node_modules",
+        ".vscode",
+        "tsconfig.json",
+        ".gitignore",
+        ".npmignore"
+    ]
+}

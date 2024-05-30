@@ -1,0 +1,56 @@
+{
+	"name"				: "@je-es/cli",
+	"version"			: "0.0.1",
+	"description"		: "An easy, fast and efficient way to create command line applications in Node JS",
+	"keywords"			: [ "je-es", "cli", "npm", "Maysara_Elshewehy" ],
+	"license"			: "MIT",
+
+	"main"				: "./dist/main.js",
+	"module"			: "./dist/main.mjs",
+	"types"				: "./dist/main.d.ts",
+	"files"				: [ "dist" ],
+
+	"scripts"			:
+	{
+		"test"			: "tsup && jest",
+		"build"			: "tsup",
+		"start"			: "tsup && node ./dist/main.js"
+	},
+
+	"author"			:
+	{
+		"name"			: "Maysara Elshewehy",
+		"email"			: "maysara.elshewehy@gmail.com"
+	},
+
+	"publishConfig"		:
+	{
+		"registry"		: "https://npm.pkg.github.com/"
+	},
+
+	"repository"		:
+	{
+		"type"			: "git",
+		"url"			: "git+https://github.com/je-es/cli.git"
+	},
+
+	"bugs"				:
+	{
+		"url"			: "https://github.com/je-es/cli/issues"
+	},
+
+	"homepage"			: "https://github.com/je-es/cli#readme",
+
+	"devDependencies"	:
+	{
+		"@types/node"	: "^20.12.7",
+		"ts-node"		: "^10.9.2",
+
+		"ts-jest"		: "^29.1.2",
+		"@types/jest"	: "^29.5.12",
+		"jest"			: "^29.7.0",
+
+		"tsup"			: "^8.0.2",
+		"typescript"	: "^5.4.5"
+	}
+}
