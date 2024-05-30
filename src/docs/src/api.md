@@ -55,8 +55,9 @@
         {
             flag                ?: string,
             alias               ?: string,
+            required            ?: string[],
             args                ?: string[],
-            callback            : (args:any) => void
+            callback            ?: (args:any) => void
         }
         ```
 
@@ -76,22 +77,20 @@
           {
               create:
               {
+                  flag        : '-c',
                   alias       : '--create',
                   args        : ['name'],
-                  callback    : ({ name }) =>
+                  required    : ['as'],         // refer to the keys not alias or flags
+                  callback    : ({ name, type }) =>
                   {
-                      console.log(`Creating project '${name}'.`);
+                      console.log(`Creating project '${name} as ${type}'.`);
                   }
               },
 
               as:
               {
-                  alias       : '--as',
-                  args        : ['type'],
-                  callback    : ({ type }) =>
-                  {
-                      console.log(`As '${type}'.`);
-                  }
+                  alias       : '--as',         // !flag && !alias : alias = '--' + key = 'as'
+                  args        : ['type']
               }
           }
       };
@@ -103,13 +102,14 @@
 
       ```bash
       npx mecs --create myPack --as npm
+      ||
+      npx mecs -c myPack --as npm
       ```
 
       _RESULT_
 
       ```bash
-      # => Creating project 'myPack'.
-      # => As 'npm'.
+      # Creating project 'myproject as koko'.
       ```
 
 ---

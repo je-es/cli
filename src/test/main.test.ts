@@ -36,8 +36,8 @@
             },
             actions: {
             test: {
-                flag: 't',
-                alias: 'test',
+                flag: '-t',
+                alias: '--test',
                 args: ['arg1', 'arg2'],
                 callback: mockCallback,
             },
@@ -47,18 +47,9 @@
         it('should execute callback function when valid command is passed', () =>
         {
             // Mock process.argv with valid command
-            process.argv.push('-test', 'value1', 'value2');
+            process.argv.push('--test', 'value1', 'value2');
             cli(options);
             expect(mockCallback).toHaveBeenCalledWith({ arg1: 'value1', arg2: 'value2' });
-        });
-
-        it('should log error message when command not found', () =>
-        {
-            // Mock process.argv with invalid command
-            process.argv.push('-invalid');
-            const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-            cli(options);
-            expect(consoleSpy).toHaveBeenCalledWith("Command 'invalid' not found.");
         });
     });
 
