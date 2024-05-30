@@ -77,7 +77,6 @@
                         for (let j = i + 1; j < args.length; j++)
                         {
                             const nextArg = args[j];
-                            console.log('nextArg', nextArg);
 
                             if (nextArg.startsWith('-'))
                             {
