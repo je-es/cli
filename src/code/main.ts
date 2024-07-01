@@ -1,8 +1,6 @@
-#!/usr/bin/env node
-
 /**
  * @name                                    main.ts
- * @description                             the main file (entry point)
+ * @description                             the entry point.
  * @author                                  Maysara Elshewehy
  * @repo                                    https://github.com/je-es/cli
  *
@@ -10,8 +8,10 @@
 */
 
 
-/* ---------------------------------------- PACK ----------------------------------------  */
 
-    export *                                from './modules/cli';
+/* ┌─────────────────────────────────────── PACK ───────────────────────────────────────┐  */
 
-/* ---------------------------------------- ---- ----------------------------------------  */
+    export *                                from './mod/types.d';
+    export *                                from './mod/cli';
+
+/* └────────────────────────────────────────────────────────────────────────────────────┘  */

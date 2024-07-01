@@ -1,6 +1,4 @@
 node_modules
 .vscode
-docs
 src
-test
 .npmrc

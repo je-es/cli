@@ -6,27 +6,107 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        "tsup.config.ts": true,
-        "package-lock.json": true,
+        "pnpm-lock.yaml": true,
         "LICENSE": true,
-        "jest.config.js": true,
-        ".gitattributes": true,
-        "node_modules": true,
-        ".vscode": true,
-        "tsconfig.json": true,
+        ".npmignore": true,
         ".gitignore": true,
-        ".npmignore": true
+        ".gitattributes": true,
+        ".vscode": true,
+        "jest.config.js": true,
+        "tsup.config.ts": true,
+        "tsconfig.json": true,
+        "node_modules": true
     },
     "hide-files.files": [
-        "tsup.config.ts",
-        "package-lock.json",
+        "pnpm-lock.yaml",
         "LICENSE",
-        "jest.config.js",
-        ".gitattributes",
-        "node_modules",
-        ".vscode",
-        "tsconfig.json",
+        ".npmignore",
         ".gitignore",
-        ".npmignore"
-    ]
+        ".gitattributes",
+        ".vscode",
+        "jest.config.js",
+        "tsup.config.ts",
+        "tsconfig.json",
+        "node_modules"
+    ],
+    "material-icon-theme.folders.associations": {
+        "media" : "Middleware"
+    },
+
+    "editor.tokenColorCustomizations": {
+        "comments": "#999898"
+    },
+
+    "colorful-comments.tags":
+    [
+        {
+            "tag": "!",
+            "color": "#FF2D00",
+            "strikethrough": false,
+            "backgroundColor": "transparent"
+        },
+        {
+            "tag": "?",
+            "color": "#0076FF",
+            "strikethrough": false,
+            "backgroundColor": "transparent"
+        },
+        {
+            "tag": "//",
+            "color": "#999898",
+            "strikethrough": true,
+            "backgroundColor": "transparent"
+        },
+        {
+            "tag": "^",
+            "color": "#EAF622",
+            "strikethrough": false,
+            "backgroundColor": "transparent"
+        },
+        {
+            "tag": "*",
+            "color": "#28FF00",
+            "strikethrough": false,
+            "backgroundColor": "transparent"
+        },
+        {
+            "tag": "&",
+            "color": "#FF06A0",
+            "strikethrough": false,
+            "backgroundColor": "transparent"
+        },
+        {
+            "tag": "~",
+            "color": "#BE00FF",
+            "strikethrough": false,
+            "backgroundColor": "transparent"
+        },
+        {
+            "tag": " [",
+            "color": "#E16285",
+            "strikethrough": false,
+            "backgroundColor": "transparent"
+        },
+        {
+            "tag": "todo",
+            "color": "#FF8C00",
+            "strikethrough": false,
+            "backgroundColor": "transparent"
+        },
+        {
+            "tag": "-",
+            "color": "#988A93",
+            "strikethrough": false,
+            "backgroundColor": "transparent"
+        },
+        {
+            "tag": "/* ┌",
+            "color": "#676767",
+        },
+        {
+            "tag": "/* └",
+            "color": "#676767",
+        },
+    ],
+    "compile-hero.disable-compile-files-on-did-save-code": true
 }
