@@ -46,7 +46,7 @@
                     if( ... )
                     {
                         // IF not forced, throw an error
-                        if( !force )
+                        if( !args.force )
                         {
                             throw new Error('This person is already registered');
                         }
