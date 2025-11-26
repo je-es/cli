@@ -1,32 +1,14 @@
 {
+    "hide-files.files": [
+        "node_modules"
+    ],
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
         "**/.hg": true,
-        "**/CVS": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        "package-lock.json": true,
-        "LICENSE": true,
-        "jest.config.js": true,
-        ".gitattributes": true,
-        "node_modules": true,
-        ".vscode": true,
-        ".gitignore": true,
-        "pnpm-lock.yaml": true,
-        "tsup.config.ts": true,
-        "tsconfig.json": true
-    },
-    "hide-files.files": [
-        "package-lock.json",
-        "LICENSE",
-        "jest.config.js",
-        ".gitattributes",
-        "node_modules",
-        ".vscode",
-        ".gitignore",
-        "pnpm-lock.yaml",
-        "tsup.config.ts",
-        "tsconfig.json"
-    ]
+        "**/CVS": true,
+        "node_modules": true
+    }
 }

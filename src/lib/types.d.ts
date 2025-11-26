@@ -6,7 +6,7 @@
 
 // ╔════════════════════════════════════════ TYPE ════════════════════════════════════════╗
 
-    interface CommandConfig<T = any> {
+    export interface CommandConfig<T = any> {
         name            : string;
         aliases?        : string[];
         description?    : string;
@@ -16,7 +16,7 @@
         examples?       : string[];
     }
 
-    interface ArgumentConfig {
+    export interface ArgumentConfig {
         name            : string;
         description?    : string;
         required?       : boolean;
@@ -24,7 +24,7 @@
         default?        : string;
     }
 
-    interface OptionConfig {
+    export interface OptionConfig {
         name            : string;
         flag            : string;
         aliases?        : string[];
@@ -35,7 +35,7 @@
         validate?       : (value: any) => boolean | string;
     }
 
-    interface CLIConfig {
+    export interface CLIConfig {
         name            : string;
         version         : string;
         description?    : string;
@@ -43,47 +43,10 @@
         globalOptions?  : OptionConfig[];
     }
 
-    interface ParsedCommand {
+    export interface ParsedCommand {
         name            : string;
         args            : Record<string, string>;
         options         : Record<string, any>;
     }
 
-declare class CLIError extends Error {
-    code: string;
-    constructor(message: string, code?: string);
-}
-declare class ValidationError extends CLIError {
-    constructor(message: string);
-}
-declare class CommandNotFoundError extends CLIError {
-    constructor(command: string);
-}
-
-declare class CLI {
-    private config;
-    private commands;
-    private globalOptions;
-    private parser;
-    constructor(config: CLIConfig);
-    private initializeCommands;
-    private initializeGlobalOptions;
-    run(argv?: string[]): Promise<void>;
-    private parseCommand;
-    private getOptionValue;
-    private convertOptionType;
-    private showHelp;
-    private showCommandHelp;
-    private handleError;
-}
-declare class CLIBuilder {
-    private config;
-    constructor(name: string, version: string);
-    description(desc: string): this;
-    command(config: CommandConfig): this;
-    globalOption(option: OptionConfig): this;
-    build(): CLI;
-}
-declare function cli(name: string, version: string): CLIBuilder;
-
-export { type ArgumentConfig, CLI, CLIBuilder, type CLIConfig, CLIError, type CommandConfig, CommandNotFoundError, type OptionConfig, type ParsedCommand, ValidationError, cli };
+// ╚══════════════════════════════════════════════════════════════════════════════════════╝

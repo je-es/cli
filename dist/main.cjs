@@ -1,3 +1,21 @@
+"use strict";
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
     var fulfilled = (value) => {
@@ -18,6 +36,18 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
+
+// src/main.ts
+var main_exports = {};
+__export(main_exports, {
+  CLI: () => CLI,
+  CLIBuilder: () => CLIBuilder,
+  CLIError: () => CLIError,
+  CommandNotFoundError: () => CommandNotFoundError,
+  ValidationError: () => ValidationError,
+  cli: () => cli
+});
+module.exports = __toCommonJS(main_exports);
 
 // src/lib/mods/cli_error.ts
 var CLIError = class _CLIError extends Error {
@@ -373,12 +403,13 @@ var CLIBuilder = class {
 function cli(name, version) {
   return new CLIBuilder(name, version);
 }
-export {
+// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
   CLI,
   CLIBuilder,
   CLIError,
   CommandNotFoundError,
   ValidationError,
   cli
-};
-//# sourceMappingURL=main.js.map
+});
+//# sourceMappingURL=main.cjs.map

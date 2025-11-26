@@ -1,2 +1,4 @@
-node_modules
+.vscode
+.git
 .npmrc
+node_modules

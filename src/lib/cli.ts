@@ -1,0 +1,445 @@
+// cli.ts
+//
+// Developed with ❤️ by Maysara.
+
+
+
+// ╔════════════════════════════════════════ PACK ════════════════════════════════════════╗
+
+    import * as types from './types.d';
+    import {
+    CLIError, ValidationError, CommandNotFoundError
+    } from './mods/cli_error';
+
+    export { CLIError, ValidationError, CommandNotFoundError };
+    export * from './types.d';
+
+// ╚══════════════════════════════════════════════════════════════════════════════════════╝
+
+
+
+// ╔════════════════════════════════════════ CORE ════════════════════════════════════════╗
+
+    class ArgumentParser {
+    private tokens: string[] = [];
+    private position = 0;
+
+    parse(args: string[]): { command?: string; options: Record<string, any>; positional: string[] } {
+        this.tokens = args;
+        this.position = 0;
+
+        const result: { command?: string; options: Record<string, any>; positional: string[] } = {
+        options: {},
+        positional: []
+        };
+
+        // First token might be a command
+        if (this.hasNext() && !this.peek().startsWith('-')) {
+        result.command = this.consume();
+        }
+
+        while (this.hasNext()) {
+        const token = this.consume();
+
+        if (token.startsWith('--')) {
+            // Long option
+            const [key, value] = token.slice(2).split('=');
+            if (value !== undefined) {
+            result.options[key] = value;
+            } else if (this.hasNext() && !this.peek().startsWith('-')) {
+            result.options[key] = this.consume();
+            } else {
+            result.options[key] = true;
+            }
+        } else if (token.startsWith('-') && token.length > 1) {
+            // Short option(s)
+            const flags = token.slice(1).split('');
+            for (let i = 0; i < flags.length; i++) {
+            const flag = flags[i];
+            if (i === flags.length - 1 && this.hasNext() && !this.peek().startsWith('-')) {
+                result.options[flag] = this.consume();
+            } else {
+                result.options[flag] = true;
+            }
+            }
+        } else {
+            // Positional argument
+            result.positional.push(token);
+        }
+        }
+
+        return result;
+    }
+
+    private hasNext(): boolean {
+        return this.position < this.tokens.length;
+    }
+
+    private peek(): string {
+        return this.tokens[this.position];
+    }
+
+    private consume(): string {
+        return this.tokens[this.position++];
+    }
+    }
+
+    export class CLI {
+    private config: types.CLIConfig;
+    private commands: Map<string, types.CommandConfig> = new Map();
+    private globalOptions: Map<string, types.OptionConfig> = new Map();
+    private parser = new ArgumentParser();
+
+    constructor(config: types.CLIConfig) {
+        this.config = config;
+        this.initializeCommands();
+        this.initializeGlobalOptions();
+    }
+
+    private initializeCommands(): void {
+        if (!this.config.commands) return;
+
+        for (const cmd of this.config.commands) {
+        this.commands.set(cmd.name, cmd);
+        if (cmd.aliases) {
+            for (const alias of cmd.aliases) {
+            this.commands.set(alias, cmd);
+            }
+        }
+        }
+    }
+
+    private initializeGlobalOptions(): void {
+        if (!this.config.globalOptions) return;
+
+        for (const opt of this.config.globalOptions) {
+        this.globalOptions.set(opt.name, opt);
+        this.globalOptions.set(opt.flag, opt);
+        if (opt.aliases) {
+            for (const alias of opt.aliases) {
+            this.globalOptions.set(alias, opt);
+            }
+        }
+        }
+    }
+
+    async run(argv: string[] = process.argv.slice(2)): Promise<void> {
+        try {
+        const parsed = this.parser.parse(argv);
+
+        // Handle help (always check this first)
+        if (parsed.options.help || parsed.options.h) {
+            this.showHelp(parsed.command);
+            return;
+        }
+
+        // No command provided - check for version or show help
+        if (!parsed.command) {
+            // Handle version only when no command
+            if (parsed.options.version || parsed.options.v) {
+            console.log(`${this.config.name} v${this.config.version}`);
+            return;
+            }
+            
+            if (this.commands.size === 0) {
+            throw new CLIError('No command specified');
+            }
+            this.showHelp();
+            return;
+        }
+
+        // Find command
+        const command = this.commands.get(parsed.command);
+        if (!command) {
+            throw new CommandNotFoundError(parsed.command);
+        }
+
+        // Check if -v/--version should be handled as version (only if command doesn't use -v)
+        const commandUsesV = command.options?.some(opt => 
+            opt.flag === '-v' || opt.aliases?.includes('-v')
+        );
+        
+        if (!commandUsesV && (parsed.options.version || parsed.options.v)) {
+            console.log(`${this.config.name} v${this.config.version}`);
+            return;
+        }
+
+        // Parse and validate
+        const result = this.parseCommand(command, parsed.positional, parsed.options);
+
+        // Execute command
+        if (command.action) {
+            await command.action(result);
+        }
+        } catch (error) {
+        this.handleError(error);
+        }
+    }
+
+    private parseCommand(
+        command: types.CommandConfig,
+        positional: string[],
+        rawOptions: Record<string, any>
+    ): any {
+        const result: any = { args: {}, options: {} };
+
+        // Parse arguments
+        if (command.args) {
+        for (let i = 0; i < command.args.length; i++) {
+            const argConfig = command.args[i];
+            const value = positional[i];
+
+            if (!value) {
+            if (argConfig.required !== false) {
+                throw new ValidationError(`Missing required argument: ${argConfig.name}`);
+            }
+            result.args[argConfig.name] = argConfig.default;
+            continue;
+            }
+
+            // Validate
+            if (argConfig.validate) {
+            const validation = argConfig.validate(value);
+            if (validation !== true) {
+                throw new ValidationError(
+                typeof validation === 'string'
+                    ? validation
+                    : `Invalid value for argument '${argConfig.name}': ${value}`
+                );
+            }
+            }
+
+            result.args[argConfig.name] = value;
+        }
+        }
+
+        // Parse options
+        if (command.options) {
+        for (const optConfig of command.options) {
+            const value = this.getOptionValue(optConfig, rawOptions);
+
+            if (value === undefined) {
+            if (optConfig.required) {
+                throw new ValidationError(`Missing required option: --${optConfig.name}`);
+            }
+            result.options[optConfig.name] = optConfig.default;
+            continue;
+            }
+
+            // Type conversion
+            const converted = this.convertOptionType(value, optConfig.type);
+
+            // Validate
+            if (optConfig.validate) {
+            const validation = optConfig.validate(converted);
+            if (validation !== true) {
+                throw new ValidationError(
+                typeof validation === 'string'
+                    ? validation
+                    : `Invalid value for option '${optConfig.name}': ${converted}`
+                );
+            }
+            }
+
+            result.options[optConfig.name] = converted;
+        }
+        }
+
+        return result;
+    }
+
+    private getOptionValue(config: types.OptionConfig, rawOptions: Record<string, any>): any {
+        // Check by name first
+        if (rawOptions[config.name] !== undefined) {
+        return rawOptions[config.name];
+        }
+
+        // Check by flag (remove ALL leading dashes)
+        const flag = config.flag.replace(/^-+/, '');
+        if (rawOptions[flag] !== undefined) {
+        return rawOptions[flag];
+        }
+
+        // Check aliases
+        if (config.aliases) {
+        for (const alias of config.aliases) {
+            const cleanAlias = alias.replace(/^-+/, '');
+            if (rawOptions[cleanAlias] !== undefined) {
+            return rawOptions[cleanAlias];
+            }
+        }
+        }
+
+        return undefined;
+    }
+
+    private convertOptionType(value: any, type?: 'boolean' | 'string' | 'number'): any {
+        if (type === 'number') {
+        const num = Number(value);
+        if (isNaN(num)) {
+            throw new ValidationError(`Expected number, got: ${value}`);
+        }
+        return num;
+        }
+        if (type === 'boolean') {
+        if (value === true || value === 'true') return true;
+        if (value === false || value === 'false') return false;
+        return !!value;
+        }
+        return String(value);
+    }
+
+    private showHelp(commandName?: string): void {
+        if (commandName) {
+        const command = this.commands.get(commandName);
+        if (command) {
+            this.showCommandHelp(command);
+            return;
+        }
+        }
+
+        console.log(`${this.config.name} v${this.config.version}`);
+        if (this.config.description) {
+        console.log(this.config.description);
+        }
+        console.log();
+        console.log('USAGE:');
+        console.log(`  ${this.config.name} <command> [options]`);
+        console.log();
+        console.log('COMMANDS:');
+
+        const uniqueCommands = new Map<string, types.CommandConfig>();
+        for (const [name, cmd] of this.commands) {
+        if (name === cmd.name) {
+            uniqueCommands.set(name, cmd);
+        }
+        }
+
+        for (const [name, cmd] of uniqueCommands) {
+        const aliases = cmd.aliases ? ` (${cmd.aliases.join(', ')})` : '';
+        console.log(`  ${name}${aliases}`);
+        if (cmd.description) {
+            console.log(`    ${cmd.description}`);
+        }
+        }
+
+        console.log();
+        console.log('OPTIONS:');
+        console.log('  -h, --help       Show help');
+        console.log('  -v, --version    Show version');
+    }
+
+    private showCommandHelp(command: types.CommandConfig): void {
+        console.log(`${command.name}`);
+        if (command.description) {
+        console.log(command.description);
+        }
+        console.log();
+
+        // Usage
+        let usage = `${this.config.name} ${command.name}`;
+        if (command.args) {
+        usage += ' ' + command.args.map(a =>
+            a.required !== false ? `<${a.name}>` : `[${a.name}]`
+        ).join(' ');
+        }
+        console.log('USAGE:');
+        console.log(`  ${usage}`);
+        console.log();
+
+        // Arguments
+        if (command.args && command.args.length > 0) {
+        console.log('ARGUMENTS:');
+        for (const arg of command.args) {
+            const req = arg.required !== false ? 'required' : 'optional';
+            console.log(`  ${arg.name} (${req})`);
+            if (arg.description) {
+            console.log(`    ${arg.description}`);
+            }
+        }
+        console.log();
+        }
+
+        // Options
+        if (command.options && command.options.length > 0) {
+        console.log('OPTIONS:');
+        for (const opt of command.options) {
+            const aliases = opt.aliases ? `, ${opt.aliases.join(', ')}` : '';
+            const req = opt.required ? ' (required)' : '';
+            console.log(`  ${opt.flag}${aliases}${req}`);
+            if (opt.description) {
+            console.log(`    ${opt.description}`);
+            }
+        }
+        console.log();
+        }
+
+        // Examples
+        if (command.examples && command.examples.length > 0) {
+        console.log('EXAMPLES:');
+        for (const example of command.examples) {
+            console.log(`  ${example}`);
+        }
+        console.log();
+        }
+    }
+
+    private handleError(error: unknown): void {
+        if (error instanceof CLIError) {
+        console.error(`Error: ${error.message}`);
+        process.exit(1);
+        } else if (error instanceof Error) {
+        console.error(`Unexpected error: ${error.message}`);
+        if (process.env.DEBUG) {
+            console.error(error.stack);
+        }
+        process.exit(1);
+        } else {
+        console.error('An unknown error occurred');
+        process.exit(1);
+        }
+    }
+    }
+
+    export class CLIBuilder {
+    private config: types.CLIConfig;
+
+    constructor(name: string, version: string) {
+        this.config = { name, version, commands: [], globalOptions: [] };
+    }
+
+    description(desc: string): this {
+        this.config.description = desc;
+        return this;
+    }
+
+    command(config: types.CommandConfig): this {
+        if (!this.config.commands) this.config.commands = [];
+        this.config.commands.push(config);
+        return this;
+    }
+
+    globalOption(option: types.OptionConfig): this {
+        if (!this.config.globalOptions) this.config.globalOptions = [];
+        this.config.globalOptions.push(option);
+        return this;
+    }
+
+    build(): CLI {
+        return new CLI(this.config);
+    }
+    }
+
+// ╚══════════════════════════════════════════════════════════════════════════════════════╝
+
+
+
+// ╔════════════════════════════════════════ ════ ════════════════════════════════════════╗
+
+    export function cli(name: string, version: string): CLIBuilder {
+        return new CLIBuilder(name, version);
+    }
+
+    export default cli;
+
+// ╚══════════════════════════════════════════════════════════════════════════════════════╝
