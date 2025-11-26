@@ -1,4 +1,4 @@
-// types
+// types.d.ts
 //
 // Developed with ❤️ by Maysara.
 
@@ -59,7 +59,6 @@ declare class ValidationError extends CLIError {
 declare class CommandNotFoundError extends CLIError {
     constructor(command: string);
 }
-
 declare class CLI {
     private config;
     private commands;

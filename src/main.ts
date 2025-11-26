@@ -1,4 +1,4 @@
-// main.ts — je-es cli.
+// main.ts
 //
 // repo   : https://github.com/je-es/cli
 // author : https://github.com/maysara-elshewehy

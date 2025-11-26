@@ -19,7 +19,7 @@ var __async = (__this, __arguments, generator) => {
   });
 };
 
-// src/lib/mods/cli_error.ts
+// src/lib/cli.ts
 var CLIError = class _CLIError extends Error {
   constructor(message, code = "CLI_ERROR") {
     var _a;
@@ -41,8 +41,6 @@ var CommandNotFoundError = class extends CLIError {
     this.name = "CommandNotFoundError";
   }
 };
-
-// src/lib/cli.ts
 var ArgumentParser = class {
   constructor() {
     this.tokens = [];

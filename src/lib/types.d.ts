@@ -1,4 +1,4 @@
-// types
+// types.d.ts
 //
 // Developed with ❤️ by Maysara.
 
