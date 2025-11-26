@@ -92,4 +92,4 @@ declare class CLIBuilder {
 }
 declare function cli(name: string, version: string): CLIBuilder;
 
-export { type ArgumentConfig, CLI, CLIBuilder, type CLIConfig, CLIError, type CommandConfig, CommandNotFoundError, type OptionConfig, type ParsedCommand, ValidationError, cli };
+export { type ArgumentConfig, CLI, CLIBuilder, type CLIConfig, CLIError, type CommandConfig, CommandNotFoundError, type OptionConfig, type ParsedCommand, ValidationError, cli, cli as default };
