@@ -1,6 +1,6 @@
 {
 	"name": "@je-es/cli",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"type": "module",
 	"description": "Zero-dependency, type-safe CLI framework",
 	"keywords": [

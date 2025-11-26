@@ -293,6 +293,33 @@
             options: { force: false }
         });
         });
+
+        it('should throw error for unknown options when dynamic options disabled', async () => {
+        const app = cli('test', '1.0.0')
+            .command({
+            name: 'test',
+            allowDynamicOptions: false,
+            action: jest.fn()
+            })
+            .build();
+
+        await app.run(['test', '--unknown']);
+        expect(exitSpy).toHaveBeenCalledWith(1);
+        });
+
+        it('should throw error for extra positional args when dynamic args disabled', async () => {
+        const app = cli('test', '1.0.0')
+            .command({
+            name: 'test',
+            args: [{ name: 'name', required: true }],
+            allowDynamicArgs: false,
+            action: jest.fn()
+            })
+            .build();
+
+        await app.run(['test', 'arg1', 'arg2']);
+        expect(exitSpy).toHaveBeenCalledWith(1);
+        });
     });
 
     describe('Type Conversion', () => {
@@ -350,6 +377,138 @@
         });
     });
 
+    describe('Dynamic Arguments and Options', () => {
+        it('should capture dynamic arguments when enabled', async () => {
+        const action = jest.fn();
+        const app = cli('test', '1.0.0')
+            .command({
+            name: 'exec',
+            args: [{ name: 'command', required: true }],
+            allowDynamicArgs: true,
+            action
+            })
+            .build();
+
+        await app.run(['exec', 'node', 'script.js', '--production']);
+        expect(action).toHaveBeenCalledWith({
+            args: { command: 'node' },
+            options: {},
+            dynamicArgs: ['script.js', '--production']
+        });
+        });
+
+        it('should capture dynamic options when enabled', async () => {
+        const action = jest.fn();
+        const app = cli('test', '1.0.0')
+            .command({
+            name: 'exec',
+            args: [{ name: 'command', required: true }],
+            allowDynamicOptions: true,
+            action
+            })
+            .build();
+
+        await app.run(['exec', 'node', '--experimental', '--max-old-space=4096']);
+        expect(action).toHaveBeenCalledWith({
+            args: { command: 'node' },
+            options: {},
+            dynamicOptions: { experimental: true, 'max-old-space': '4096' }
+        });
+        });
+
+        it('should handle both dynamic args and options together', async () => {
+        const action = jest.fn();
+        const app = cli('test', '1.0.0')
+            .command({
+            name: 'exec',
+            args: [{ name: 'command', required: true }],
+            options: [
+                { name: 'cwd', flag: '--cwd', type: 'string' }
+            ],
+            allowDynamicArgs: true,
+            allowDynamicOptions: true,
+            action
+            })
+            .build();
+
+        await app.run(['exec', 'npm', 'install', 'react', '--cwd', '/app', '--save-dev', '--legacy-peer-deps']);
+        expect(action).toHaveBeenCalledWith({
+            args: { command: 'npm' },
+            options: { cwd: '/app' },
+            dynamicArgs: ['install', 'react'],
+            dynamicOptions: { 'save-dev': true, 'legacy-peer-deps': true }
+        });
+        });
+
+        it('should separate known and unknown options correctly', async () => {
+        const action = jest.fn();
+        const app = cli('test', '1.0.0')
+            .command({
+            name: 'run',
+            options: [
+                { name: 'verbose', flag: '-v', type: 'boolean', default: false },
+                { name: 'config', flag: '-c', type: 'string' }
+            ],
+            allowDynamicOptions: true,
+            action
+            })
+            .build();
+
+        await app.run(['run', '-v', '-c', 'app.json', '--unknown1', '--unknown2', 'value']);
+        expect(action).toHaveBeenCalledWith({
+            args: {},
+            options: { verbose: true, config: 'app.json' },
+            dynamicOptions: { unknown1: true, unknown2: 'value' }
+        });
+        });
+
+        it('should handle empty dynamic arrays when none provided', async () => {
+        const action = jest.fn();
+        const app = cli('test', '1.0.0')
+            .command({
+            name: 'exec',
+            args: [{ name: 'command', required: true }],
+            allowDynamicArgs: true,
+            allowDynamicOptions: true,
+            action
+            })
+            .build();
+
+        await app.run(['exec', 'node']);
+        expect(action).toHaveBeenCalledWith({
+            args: { command: 'node' },
+            options: {},
+            dynamicArgs: [],
+            dynamicOptions: {}
+        });
+        });
+
+        it('should work with complex exec-like command', async () => {
+        const action = jest.fn();
+        const app = cli('docker', '1.0.0')
+            .command({
+            name: 'run',
+            args: [{ name: 'image', required: true }],
+            options: [
+                { name: 'detach', flag: '-d', type: 'boolean', default: false },
+                { name: 'name', flag: '--name', type: 'string' }
+            ],
+            allowDynamicArgs: true,
+            allowDynamicOptions: true,
+            action
+            })
+            .build();
+
+        await app.run(['run', '-d', '--name', 'myapp', 'node:18', '-p', '3000:3000', '-e', 'NODE_ENV=production', 'npm', 'start']);
+        expect(action).toHaveBeenCalledWith({
+            args: { image: 'node:18' },
+            options: { detach: true, name: 'myapp' },
+            dynamicArgs: ['npm', 'start'],
+            dynamicOptions: { p: '3000:3000', e: 'NODE_ENV=production' }
+        });
+        });
+    });
+
     describe('Help System', () => {
         it('should show help with -h flag', async () => {
         const app = cli('test', '1.0.0')
@@ -397,6 +556,25 @@
 
         await app.run(['create', '--help']);
         expect(consoleSpy).toHaveBeenCalled();
+        });
+
+        it('should show dynamic indicators in help', async () => {
+        const app = cli('test', '1.0.0')
+            .command({
+            name: 'exec',
+            description: 'Execute command',
+            args: [{ name: 'command', required: true }],
+            allowDynamicArgs: true,
+            allowDynamicOptions: true
+            })
+            .build();
+
+        await app.run(['exec', '--help']);
+        expect(consoleSpy).toHaveBeenCalled();
+        const helpOutput = consoleSpy.mock.calls.map(call => call[0]).join('\n');
+        expect(helpOutput).toContain('[...]');
+        expect(helpOutput).toContain('additional arguments allowed');
+        expect(helpOutput).toContain('additional options allowed');
         });
     });
 

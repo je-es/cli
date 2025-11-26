@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-    <img src="https://img.shields.io/badge/v-1.0.2-black"/>
+    <img src="https://img.shields.io/badge/v-1.0.3-black"/>
     <a href="https://github.com/maysara-elshewehy">
     </a>
     <a href="https://github.com/je-es"><img src="https://img.shields.io/badge/@-je--es-black"/></a>
@@ -66,13 +66,15 @@
 
     ```typescript
     .command({
-    name          : 'create',
-    aliases       : ['c', 'new'],             # short names
-    description   : 'Create project',         # shown in help
-    args          : [...],                    # positional arguments
-    options       : [...],                    # flags and options
-    action        : (parsed) => { ... },      # command handler
-    examples      : ['myapp create foo']      # usage examples
+    name                  : 'create',
+    aliases               : ['c', 'new'],             # short names
+    description           : 'Create project',         # shown in help
+    args                  : [...],                    # positional arguments
+    options               : [...],                    # flags and options
+    allowDynamicArgs      : true,                     # allow unknown arguments
+    allowDynamicOptions   : true,                     # allow unknown options
+    action                : (parsed) => { ... },      # command handler
+    examples              : ['myapp create foo']      # usage examples
     })
     ```
 
@@ -108,6 +110,73 @@
         validate: (v) => ['npm','yarn'].includes(v) || 'Invalid type'
     }
     ]
+    ```
+
+    <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> <br> </div>
+
+- ## Dynamic Arguments & Options
+
+    Enable `allowDynamicArgs` and `allowDynamicOptions` to handle unknown arguments and options. Perfect for commands like `exec` that need to pass through arbitrary arguments.
+
+    ```typescript
+    cli('docker', '1.0.0')
+    .command({
+        name                : 'run',
+        args                : [{ name: 'image', required: true }],
+        options             : [
+            { name: 'detach', flag: '-d', type: 'boolean' },
+            { name: 'name', flag: '--name', type: 'string' }
+        ],
+        allowDynamicArgs    : true,    # capture unknown positional args
+        allowDynamicOptions : true,    # capture unknown flags
+        action              : ({ args, options, dynamicArgs, dynamicOptions }) => {
+            console.log('Image:', args.image);
+            console.log('Known options:', options);
+            console.log('Extra args:', dynamicArgs);      # ['npm', 'start']
+            console.log('Extra options:', dynamicOptions); # { p: '3000:3000', e: 'NODE_ENV=prod' }
+        }
+    })
+    .build()
+    .run();
+    ```
+
+    ```bash
+    # All unknown args/options are captured
+    docker run -d --name myapp node:18 -p 3000:3000 -e NODE_ENV=prod npm start
+    
+    # Result:
+    # args.image          = 'node:18'
+    # options.detach      = true
+    # options.name        = 'myapp'
+    # dynamicArgs         = ['npm', 'start']
+    # dynamicOptions      = { p: '3000:3000', e: 'NODE_ENV=prod' }
+    ```
+
+    ### Use Cases
+
+    - **Command execution**: `npm exec`, `docker run`, `kubectl exec`
+    - **Proxy commands**: Pass arguments to underlying tools
+    - **Flexible APIs**: Accept user-defined flags without pre-definition
+
+    ```typescript
+    # Example: npm-like exec command
+    .command({
+        name                : 'exec',
+        args                : [{ name: 'package', required: true }],
+        allowDynamicArgs    : true,
+        allowDynamicOptions : true,
+        action              : ({ args, dynamicArgs, dynamicOptions }) => {
+            // Run package with all extra args/options
+            runPackage(args.package, dynamicArgs, dynamicOptions);
+        }
+    })
+    ```
+
+    ```bash
+    myapp exec vite --port 3000 --host build --minify
+    # args.package    = 'vite'
+    # dynamicArgs     = ['build', '--minify']
+    # dynamicOptions  = { port: '3000', host: true }
     ```
 
     <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> <br> </div>
@@ -274,6 +343,67 @@
         ```bash
         myapp start -p 3000    # ✓
         myapp start -p 999     # ✗ validation error
+        ```
+
+    - ### Docker-like Exec Command
+
+        ```typescript
+        cli('docker', '1.0.0')
+        .command({
+            name                : 'run',
+            args                : [{ name: 'image', required: true }],
+            options             : [
+                { name: 'detach', flag: '-d', type: 'boolean', default: false },
+                { name: 'name', flag: '--name', type: 'string' }
+            ],
+            allowDynamicArgs    : true,
+            allowDynamicOptions : true,
+            action              : ({ args, options, dynamicArgs, dynamicOptions }) => {
+                // Start container with known options
+                console.log(`Running ${args.image}`);
+                if (options.detach) console.log('In detached mode');
+                if (options.name) console.log(`Container name: ${options.name}`);
+                
+                // Pass through all unknown options to docker
+                console.log('Docker flags:', dynamicOptions);
+                
+                // Execute command inside container
+                if (dynamicArgs.length > 0) {
+                    console.log(`Executing: ${dynamicArgs.join(' ')}`);
+                }
+            }
+        })
+        .build()
+        .run();
+        ```
+
+        ```bash
+        docker run -d --name myapp node:18 -p 3000:3000 -e NODE_ENV=prod npm start
+        ```
+
+    - ### NPM-like Exec Command
+
+        ```typescript
+        cli('npm', '1.0.0')
+        .command({
+            name                : 'exec',
+            args                : [{ name: 'package', required: true }],
+            allowDynamicArgs    : true,
+            allowDynamicOptions : true,
+            action              : async ({ args, dynamicArgs, dynamicOptions }) => {
+                // Install and run package with all provided args/options
+                await installPackage(args.package);
+                await runPackage(args.package, [...dynamicArgs], dynamicOptions);
+            }
+        })
+        .build()
+        .run();
+        ```
+
+        ```bash
+        npm exec prettier src/ --write --config .prettierrc
+        # args.package    = 'prettier'
+        # dynamicArgs     = ['src/', '--write', '--config', '.prettierrc']
         ```
 
 <!-- ╚═════════════════════════════════════════════════════════════════╝ -->

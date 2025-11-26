@@ -189,17 +189,119 @@ var CLI = class {
           console.log(`${this.config.name} v${this.config.version}`);
           return;
         }
-        const result = this.parseCommand(command, parsed.positional, parsed.options);
-        if (command.action) {
-          yield command.action(result);
+        if (command.allowDynamicArgs) {
+          const reparsed = this.reparseForDynamicArgs(argv, parsed.command);
+          const result = this.parseCommand(command, reparsed.positional, reparsed.options);
+          if (command.action) {
+            yield command.action(result);
+          }
+        } else {
+          const result = this.parseCommand(command, parsed.positional, parsed.options);
+          if (command.action) {
+            yield command.action(result);
+          }
         }
       } catch (error) {
         this.handleError(error);
       }
     });
   }
+  reparseForDynamicArgs(argv, commandName) {
+    var _a, _b, _c;
+    let idx = 0;
+    while (idx < argv.length && argv[idx] !== commandName) {
+      idx++;
+    }
+    idx++;
+    const positional = [];
+    const options = {};
+    const command = this.commands.get(commandName);
+    const numRequiredArgs = ((_a = command == null ? void 0 : command.args) == null ? void 0 : _a.filter((a) => a.required !== false).length) || 0;
+    let argsConsumed = 0;
+    while (idx < argv.length) {
+      const token = argv[idx];
+      if (argsConsumed < numRequiredArgs && !token.startsWith("-")) {
+        positional.push(token);
+        argsConsumed++;
+        idx++;
+        continue;
+      }
+      if (token.startsWith("--")) {
+        const [key, value] = token.slice(2).split("=");
+        const isKnownOption = (_b = command == null ? void 0 : command.options) == null ? void 0 : _b.some(
+          (o) => {
+            var _a2;
+            return o.flag === `--${key}` || o.name === key || ((_a2 = o.aliases) == null ? void 0 : _a2.includes(`--${key}`));
+          }
+        );
+        if (isKnownOption) {
+          if (value !== void 0) {
+            options[key] = value;
+          } else if (idx + 1 < argv.length && !argv[idx + 1].startsWith("-")) {
+            options[key] = argv[idx + 1];
+            idx++;
+          } else {
+            options[key] = true;
+          }
+        } else {
+          positional.push(token);
+          if (value === void 0 && idx + 1 < argv.length && !argv[idx + 1].startsWith("-")) {
+            positional.push(argv[idx + 1]);
+            idx++;
+          }
+        }
+      } else if (token.startsWith("-") && token.length > 1 && isNaN(Number(token))) {
+        const flags = token.slice(1).split("");
+        let allKnown = true;
+        for (const flag of flags) {
+          const isKnownOption = (_c = command == null ? void 0 : command.options) == null ? void 0 : _c.some(
+            (o) => {
+              var _a2;
+              return o.flag === `-${flag}` || ((_a2 = o.aliases) == null ? void 0 : _a2.includes(`-${flag}`));
+            }
+          );
+          if (!isKnownOption) {
+            allKnown = false;
+            break;
+          }
+        }
+        if (allKnown) {
+          for (let i = 0; i < flags.length; i++) {
+            const flag = flags[i];
+            if (i === flags.length - 1 && idx + 1 < argv.length && !argv[idx + 1].startsWith("-")) {
+              options[flag] = argv[idx + 1];
+              idx++;
+            } else {
+              options[flag] = true;
+            }
+          }
+        } else {
+          positional.push(token);
+          if (idx + 1 < argv.length && !argv[idx + 1].startsWith("-")) {
+            positional.push(argv[idx + 1]);
+            idx++;
+          }
+        }
+      } else {
+        positional.push(token);
+      }
+      idx++;
+    }
+    return { positional, options };
+  }
   parseCommand(command, positional, rawOptions) {
     const result = { args: {}, options: {} };
+    const knownOptionKeys = /* @__PURE__ */ new Set();
+    if (command.options) {
+      for (const opt of command.options) {
+        knownOptionKeys.add(opt.name);
+        knownOptionKeys.add(opt.flag.replace(/^-+/, ""));
+        if (opt.aliases) {
+          opt.aliases.forEach((a) => knownOptionKeys.add(a.replace(/^-+/, "")));
+        }
+      }
+    }
+    let dynamicArgsStart = 0;
     if (command.args) {
       for (let i = 0; i < command.args.length; i++) {
         const argConfig = command.args[i];
@@ -220,8 +322,11 @@ var CLI = class {
           }
         }
         result.args[argConfig.name] = value;
+        dynamicArgsStart = i + 1;
       }
     }
+    const dynamicOptions = {};
+    const optionIndices = /* @__PURE__ */ new Set();
     if (command.options) {
       for (const optConfig of command.options) {
         const value = this.getOptionValue(optConfig, rawOptions);
@@ -243,6 +348,65 @@ var CLI = class {
         }
         result.options[optConfig.name] = converted;
       }
+    }
+    for (const [key, value] of Object.entries(rawOptions)) {
+      if (!knownOptionKeys.has(key)) {
+        dynamicOptions[key] = value;
+      }
+    }
+    if (command.allowDynamicOptions) {
+      let i = dynamicArgsStart;
+      while (i < positional.length) {
+        const token = positional[i];
+        if (token.startsWith("--")) {
+          const [key, value] = token.slice(2).split("=");
+          optionIndices.add(i);
+          if (value !== void 0) {
+            dynamicOptions[key] = value;
+            i++;
+          } else if (i + 1 < positional.length && !positional[i + 1].startsWith("-")) {
+            dynamicOptions[key] = positional[i + 1];
+            optionIndices.add(i + 1);
+            i += 2;
+          } else {
+            dynamicOptions[key] = true;
+            i++;
+          }
+        } else if (token.startsWith("-") && token.length > 1 && isNaN(Number(token))) {
+          optionIndices.add(i);
+          const flags = token.slice(1).split("");
+          for (let j = 0; j < flags.length; j++) {
+            const flag = flags[j];
+            if (j === flags.length - 1 && i + 1 < positional.length && !positional[i + 1].startsWith("-")) {
+              dynamicOptions[flag] = positional[i + 1];
+              optionIndices.add(i + 1);
+              i++;
+            } else {
+              dynamicOptions[flag] = true;
+            }
+          }
+          i++;
+        } else {
+          i++;
+        }
+      }
+    }
+    if (command.allowDynamicArgs) {
+      const dynamicArgs = [];
+      for (let i = dynamicArgsStart; i < positional.length; i++) {
+        if (!optionIndices.has(i)) {
+          dynamicArgs.push(positional[i]);
+        }
+      }
+      result.dynamicArgs = dynamicArgs;
+    } else if (positional.length > dynamicArgsStart) {
+      throw new ValidationError(`Unexpected argument: ${positional[dynamicArgsStart]}`);
+    }
+    if (command.allowDynamicOptions) {
+      result.dynamicOptions = dynamicOptions;
+    } else if (Object.keys(dynamicOptions).length > 0) {
+      const unknownKey = Object.keys(dynamicOptions)[0];
+      throw new ValidationError(`Unknown option: ${unknownKey.length === 1 ? "-" : "--"}${unknownKey}`);
     }
     return result;
   }
@@ -326,6 +490,9 @@ var CLI = class {
         (a) => a.required !== false ? `<${a.name}>` : `[${a.name}]`
       ).join(" ");
     }
+    if (command.allowDynamicArgs) {
+      usage += " [...]";
+    }
     console.log("USAGE:");
     console.log(`  ${usage}`);
     console.log();
@@ -337,6 +504,9 @@ var CLI = class {
         if (arg.description) {
           console.log(`    ${arg.description}`);
         }
+      }
+      if (command.allowDynamicArgs) {
+        console.log(`  ... (additional arguments allowed)`);
       }
       console.log();
     }
@@ -350,6 +520,11 @@ var CLI = class {
           console.log(`    ${opt.description}`);
         }
       }
+    }
+    if (command.allowDynamicOptions) {
+      console.log(`  ... (additional options allowed)`);
+    }
+    if (command.options && command.options.length > 0 || command.allowDynamicOptions) {
       console.log();
     }
     if (command.examples && command.examples.length > 0) {
