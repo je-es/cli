@@ -6,6 +6,7 @@
 
 // ╔════════════════════════════════════════ PACK ════════════════════════════════════════╗
 
+    import { describe, test, expect, beforeEach, afterEach, mock } from 'bun:test'
     import { cli, CLI } from '../src/main';
 
 // ╚══════════════════════════════════════════════════════════════════════════════════════╝
@@ -15,26 +16,34 @@
 // ╔════════════════════════════════════════ TEST ════════════════════════════════════════╗
 
     describe('@je-es/cli', () => {
-    let consoleSpy: jest.SpyInstance;
-    let exitSpy: jest.SpyInstance;
+    let consoleSpy: ReturnType<typeof mock>;
+    let consoleErrorSpy: ReturnType<typeof mock>;
+    let exitSpy: ReturnType<typeof mock>;
 
     beforeEach(() => {
-        consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-        jest.spyOn(console, 'error').mockImplementation();
-        exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+        consoleSpy = mock(() => {});
+        console.log = consoleSpy;
+
+        consoleErrorSpy = mock(() => {});
+        console.error = consoleErrorSpy;
+
+        exitSpy = mock(() => {});
+        process.exit = exitSpy as any;
     });
 
     afterEach(() => {
-        jest.restoreAllMocks();
+        consoleSpy.mockRestore();
+        consoleErrorSpy.mockRestore();
+        exitSpy.mockRestore();
     });
 
     describe('Builder API', () => {
-        it('should create CLI instance with builder', () => {
+        test('should create CLI instance with builder', () => {
         const app = cli('test', '1.0.0').build();
         expect(app).toBeInstanceOf(CLI);
         });
 
-        it('should chain builder methods', () => {
+        test('should chain builder methods', () => {
         const app = cli('test', '1.0.0')
             .description('Test CLI')
             .command({
@@ -48,8 +57,8 @@
     });
 
     describe('Command Parsing', () => {
-        it('should parse simple command', async () => {
-        const action = jest.fn();
+        test('should parse simple command', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'hello',
@@ -61,8 +70,8 @@
         expect(action).toHaveBeenCalled();
         });
 
-        it('should parse command with arguments', async () => {
-        const action = jest.fn();
+        test('should parse command with arguments', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'create',
@@ -78,8 +87,8 @@
         });
         });
 
-        it('should parse command with options', async () => {
-        const action = jest.fn();
+        test('should parse command with options', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'create',
@@ -99,8 +108,8 @@
         });
         });
 
-        it('should handle long options', async () => {
-        const action = jest.fn();
+        test('should handle long options', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'create',
@@ -119,8 +128,8 @@
         });
         });
 
-        it('should handle option with equals syntax', async () => {
-        const action = jest.fn();
+        test('should handle option with equals syntax', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'create',
@@ -139,8 +148,8 @@
         });
         });
 
-        it('should handle command aliases', async () => {
-        const action = jest.fn();
+        test('should handle command aliases', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'create',
@@ -157,16 +166,16 @@
         expect(action).toHaveBeenCalled();
         });
 
-        it('should handle option aliases', async () => {
-        const action = jest.fn();
+        test('should handle option aliases', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'create',
             args: [{ name: 'name', required: true }],
             options: [
-                { 
-                name: 'force', 
-                flag: '-f', 
+                {
+                name: 'force',
+                flag: '-f',
                 aliases: ['--force'],
                 type: 'boolean',
                 default: false
@@ -185,12 +194,12 @@
     });
 
     describe('Validation', () => {
-        it('should throw error for missing required argument', async () => {
+        test('should throw error for missing required argument', async () => {
         const app = cli('test', '1.0.0')
             .command({
             name: 'create',
             args: [{ name: 'name', required: true }],
-            action: jest.fn()
+            action: mock(() => {})
             })
             .build();
 
@@ -198,7 +207,7 @@
         expect(exitSpy).toHaveBeenCalledWith(1);
         });
 
-        it('should throw error for missing required option', async () => {
+        test('should throw error for missing required option', async () => {
         const app = cli('test', '1.0.0')
             .command({
             name: 'create',
@@ -206,7 +215,7 @@
             options: [
                 { name: 'type', flag: '-t', type: 'string', required: true }
             ],
-            action: jest.fn()
+            action: mock(() => {})
             })
             .build();
 
@@ -214,18 +223,18 @@
         expect(exitSpy).toHaveBeenCalledWith(1);
         });
 
-        it('should validate argument with custom validator', async () => {
+        test('should validate argument with custom validator', async () => {
         const app = cli('test', '1.0.0')
             .command({
             name: 'create',
             args: [
-                { 
-                name: 'name', 
+                {
+                name: 'name',
                 required: true,
                 validate: (val) => val.length > 3 || 'Name must be longer than 3 characters'
                 }
             ],
-            action: jest.fn()
+            action: mock(() => {})
             })
             .build();
 
@@ -233,13 +242,13 @@
         expect(exitSpy).toHaveBeenCalledWith(1);
         });
 
-        it('should validate option with custom validator', async () => {
+        test('should validate option with custom validator', async () => {
         const app = cli('test', '1.0.0')
             .command({
             name: 'create',
             args: [{ name: 'name', required: true }],
             options: [
-                { 
+                {
                 name: 'type',
                 flag: '-t',
                 type: 'string',
@@ -247,7 +256,7 @@
                 validate: (val) => ['npm', 'yarn'].includes(val) || 'Invalid type'
                 }
             ],
-            action: jest.fn()
+            action: mock(() => {})
             })
             .build();
 
@@ -255,8 +264,8 @@
         expect(exitSpy).toHaveBeenCalledWith(1);
         });
 
-        it('should use default values for optional arguments', async () => {
-        const action = jest.fn();
+        test('should use default values for optional arguments', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'create',
@@ -274,8 +283,8 @@
         });
         });
 
-        it('should use default values for options', async () => {
-        const action = jest.fn();
+        test('should use default values for options', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'create',
@@ -294,12 +303,12 @@
         });
         });
 
-        it('should throw error for unknown options when dynamic options disabled', async () => {
+        test('should throw error for unknown options when dynamic options disabled', async () => {
         const app = cli('test', '1.0.0')
             .command({
             name: 'test',
             allowDynamicOptions: false,
-            action: jest.fn()
+            action: mock(() => {})
             })
             .build();
 
@@ -307,13 +316,13 @@
         expect(exitSpy).toHaveBeenCalledWith(1);
         });
 
-        it('should throw error for extra positional args when dynamic args disabled', async () => {
+        test('should throw error for extra positional args when dynamic args disabled', async () => {
         const app = cli('test', '1.0.0')
             .command({
             name: 'test',
             args: [{ name: 'name', required: true }],
             allowDynamicArgs: false,
-            action: jest.fn()
+            action: mock(() => {})
             })
             .build();
 
@@ -323,8 +332,8 @@
     });
 
     describe('Type Conversion', () => {
-        it('should convert option to number', async () => {
-        const action = jest.fn();
+        test('should convert option to number', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'test',
@@ -342,14 +351,14 @@
         });
         });
 
-        it('should throw error for invalid number', async () => {
+        test('should throw error for invalid number', async () => {
         const app = cli('test', '1.0.0')
             .command({
             name: 'test',
             options: [
                 { name: 'port', flag: '-p', type: 'number' }
             ],
-            action: jest.fn()
+            action: mock(() => {})
             })
             .build();
 
@@ -357,8 +366,8 @@
         expect(exitSpy).toHaveBeenCalledWith(1);
         });
 
-        it('should convert option to boolean', async () => {
-        const action = jest.fn();
+        test('should convert option to boolean', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'test',
@@ -378,8 +387,8 @@
     });
 
     describe('Dynamic Arguments and Options', () => {
-        it('should capture dynamic arguments when enabled', async () => {
-        const action = jest.fn();
+        test('should capture dynamic arguments when enabled', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'exec',
@@ -397,8 +406,8 @@
         });
         });
 
-        it('should capture dynamic options when enabled', async () => {
-        const action = jest.fn();
+        test('should capture dynamic options when enabled', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'exec',
@@ -416,8 +425,8 @@
         });
         });
 
-        it('should handle both dynamic args and options together', async () => {
-        const action = jest.fn();
+        test('should handle both dynamic args and options together', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'exec',
@@ -440,8 +449,8 @@
         });
         });
 
-        it('should separate known and unknown options correctly', async () => {
-        const action = jest.fn();
+        test('should separate known and unknown options correctly', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'run',
@@ -462,8 +471,8 @@
         });
         });
 
-        it('should handle empty dynamic arrays when none provided', async () => {
-        const action = jest.fn();
+        test('should handle empty dynamic arrays when none provided', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'exec',
@@ -483,8 +492,8 @@
         });
         });
 
-        it('should work with complex exec-like command', async () => {
-        const action = jest.fn();
+        test('should work with complex exec-like command', async () => {
+        const action = mock(() => {});
         const app = cli('docker', '1.0.0')
             .command({
             name: 'run',
@@ -510,7 +519,7 @@
     });
 
     describe('Help System', () => {
-        it('should show help with -h flag', async () => {
+        test('should show help with -h flag', async () => {
         const app = cli('test', '1.0.0')
             .description('Test CLI')
             .build();
@@ -519,7 +528,7 @@
         expect(consoleSpy).toHaveBeenCalled();
         });
 
-        it('should show help with --help flag', async () => {
+        test('should show help with --help flag', async () => {
         const app = cli('test', '1.0.0')
             .description('Test CLI')
             .build();
@@ -528,21 +537,21 @@
         expect(consoleSpy).toHaveBeenCalled();
         });
 
-        it('should show version with -v flag', async () => {
+        test('should show version with -v flag', async () => {
         const app = cli('test', '1.0.0').build();
 
         await app.run(['-v']);
         expect(consoleSpy).toHaveBeenCalledWith('test v1.0.0');
         });
 
-        it('should show version with --version flag', async () => {
+        test('should show version with --version flag', async () => {
         const app = cli('test', '1.0.0').build();
 
         await app.run(['--version']);
         expect(consoleSpy).toHaveBeenCalledWith('test v1.0.0');
         });
 
-        it('should show command-specific help', async () => {
+        test('should show command-specific help', async () => {
         const app = cli('test', '1.0.0')
             .command({
             name: 'create',
@@ -558,7 +567,7 @@
         expect(consoleSpy).toHaveBeenCalled();
         });
 
-        it('should show dynamic indicators in help', async () => {
+        test('should show dynamic indicators in help', async () => {
         const app = cli('test', '1.0.0')
             .command({
             name: 'exec',
@@ -579,11 +588,11 @@
     });
 
     describe('Error Handling', () => {
-        it('should throw CommandNotFoundError for unknown command', async () => {
+        test('should throw CommandNotFoundError for unknown command', async () => {
         const app = cli('test', '1.0.0')
             .command({
             name: 'create',
-            action: jest.fn()
+            action: mock(() => {})
             })
             .build();
 
@@ -591,7 +600,7 @@
         expect(exitSpy).toHaveBeenCalledWith(1);
         });
 
-        it('should handle async action errors', async () => {
+        test('should handle async action errors', async () => {
         const app = cli('test', '1.0.0')
             .command({
             name: 'test',
@@ -607,8 +616,8 @@
     });
 
     describe('Complex Scenarios', () => {
-        it('should handle multiple arguments and options', async () => {
-        const action = jest.fn();
+        test('should handle multiple arguments and options', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'person',
@@ -631,8 +640,8 @@
         });
         });
 
-        it('should handle mixed short and long options', async () => {
-        const action = jest.fn();
+        test('should handle mixed short and long options', async () => {
+        const action = mock(() => {});
         const app = cli('test', '1.0.0')
             .command({
             name: 'test',

@@ -143,7 +143,7 @@
     ```bash
     # All unknown args/options are captured
     docker run -d --name myapp node:18 -p 3000:3000 -e NODE_ENV=prod npm start
-    
+
     # Result:
     # args.image          = 'node:18'
     # options.detach      = true
@@ -155,7 +155,9 @@
     ### Use Cases
 
     - **Command execution**: `npm exec`, `docker run`, `kubectl exec`
+
     - **Proxy commands**: Pass arguments to underlying tools
+
     - **Flexible APIs**: Accept user-defined flags without pre-definition
 
     ```typescript
@@ -363,10 +365,10 @@
                 console.log(`Running ${args.image}`);
                 if (options.detach) console.log('In detached mode');
                 if (options.name) console.log(`Container name: ${options.name}`);
-                
+
                 // Pass through all unknown options to docker
                 console.log('Docker flags:', dynamicOptions);
-                
+
                 // Execute command inside container
                 if (dynamicArgs.length > 0) {
                     console.log(`Executing: ${dynamicArgs.join(' ')}`);
