@@ -15,8 +15,8 @@
         action?         : (parsed: T) => void | Promise<void>;
         examples?       : string[];
 
-        allowDynamicArgs?    : boolean;  // NEW: Allow unknown positional arguments
-        allowDynamicOptions? : boolean;  // NEW: Allow unknown options/flags
+        allowDynamicArgs?    : boolean;
+        allowDynamicOptions? : boolean;
     }
 
     export interface ArgumentConfig {
@@ -51,8 +51,8 @@
         args            : Record<string, string>;
         options         : Record<string, any>;
 
-        dynamicArgs?    : string[];            // NEW: Unknown positional arguments
-        dynamicOptions? : Record<string, any>; // NEW: Unknown options/flags
+        dynamicArgs?    : string[];
+        dynamicOptions? : Record<string, any>;
     }
 
 // ╚══════════════════════════════════════════════════════════════════════════════════════╝

@@ -1,71 +1,49 @@
 {
-	"name": "@je-es/cli",
-	"version": "1.0.5",
-	"description": "Zero-dependency, type-safe CLI framework",
+	"name"				: "@je-es/cli",
+	"version"			: "1.0.5",
+	"description"		: "Zero-dependency, type-safe CLI framework",
+	"keywords"			: [ "cli", "command-line", "parser", "typescript", "zero-dependency", "framework" ],
+	"license"			: "MIT",
+	"homepage"			: "https://github.com/je-es/cli#readme",
+	"bugs"				: { "url": "https://github.com/je-es/cli/issues" },
 
-	"keywords": [
-		"cli",
-		"command-line",
-		"parser",
-		"typescript",
-		"zero-dependency",
-		"framework"
-	],
-
-	"license": "MIT",
-	"scripts": {
-		"build": "tsup"
+	"author"			: {
+		"name"			: "Maysara Elshewehy",
+		"email"			: "maysara.elshewehy@gmail.com",
+		"url"			: "https://github.com/maysara-elshewehy"
 	},
 
-	"type": "module",
-
-	"main": "./dist/main.js",
-	"types": "./dist/main.d.ts",
-
-	"files": ["dist"],
-	"homepage": "https://github.com/je-es/cli#readme",
-
-	"author": {
-		"name": "Maysara Elshewehy",
-		"email": "maysara.elshewehy@gmail.com",
-		"url": "https://github.com/maysara-elshewehy"
+	"repository"		: {
+		"type"			: "git",
+		"url"			: "git+https://github.com/je-es/cli.git"
 	},
 
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/je-es/cli.git"
-	},
-
-	"devDependencies": {
-		"@eslint/js": "^9.34.0",
-		"@stylistic/eslint-plugin": "^5.3.1",
-		"@types/bun": "^1.1.13",
-		"@types/node": "^20.12.7",
-		"bun-plugin-dts": "^0.3.0",
-		"bun-types": "^1.1.38",
-		"ts-node": "^10.9.2",
-		"tsup": "^8.5.1",
-		"typescript": "^5.4.5",
-		"typescript-eslint": "^8.42.0"
-	},
-
-	"peerDependencies": {
-		"bun": ">=1.3.3"
-	},
-
-	"exports": {
+	"type"				: "module",
+	"main"				: "./dist/main.js",
+	"types"				: "./dist/main.d.ts",
+	"files"				: ["dist"],
+	"exports"			: {
 		".": {
-			"types": "./dist/main.d.ts",
-			"import": "./dist/main.js",
-			"require": "./dist/main.js"
+			"types"		: "./dist/main.d.ts",
+			"import"	: "./dist/main.js",
+			"require"	: "./dist/main.js"
 		}
 	},
 
-	"bugs": {
-		"url": "https://github.com/je-es/cli/issues"
-	},
+	"scripts"			: { "build": "tsup" },
+	"engines": { "bun": ">=1.3.3" },
 
-	"engines": {
-		"bun": ">=1.3.3"
+	"peerDependencies"	: { "bun": ">=1.3.3" },
+	"devDependencies"	: {
+		"@eslint/js"					: "^9.34.0",
+		"@stylistic/eslint-plugin"		: "^5.3.1",
+		"@types/bun"					: "^1.1.13",
+		"@types/node"					: "^20.12.7",
+		"bun-plugin-dts"				: "^0.3.0",
+		"bun-types"						: "^1.1.38",
+		"ts-node"						: "^10.9.2",
+		"tsup"							: "^8.5.1",
+		"typescript"					: "^5.4.5",
+		"typescript-eslint"				: "^8.42.0"
 	}
 }
