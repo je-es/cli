@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-    <img src="https://img.shields.io/badge/v-1.0.3-black"/>
+    <img src="https://img.shields.io/badge/v-1.0.5-black"/>
     <a href="https://github.com/maysara-elshewehy">
     </a>
     <a href="https://github.com/je-es"><img src="https://img.shields.io/badge/@-je--es-black"/></a>

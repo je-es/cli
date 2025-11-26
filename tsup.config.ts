@@ -1,9 +1,16 @@
+// tsup.config.ts
 import { defineConfig } from 'tsup';
-export default defineConfig ({
-    entry                           : ["src/main.ts"],
-    format                          : ["cjs", "esm"],
-    dts                             : true,
-    splitting                       : false,
-    sourcemap                       : true,
-    clean                           : true,
+
+export default defineConfig({
+    entry: ['src/main.ts'],
+    format: ['cjs', 'esm'],
+    dts: true,
+    splitting: false,
+    sourcemap: true,
+    clean: true,
+    minify: true,
+    treeshake: true,
+    external: ['bun'],
+    target: 'es2022',
+    outDir: 'dist',
 });
