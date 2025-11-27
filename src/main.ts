@@ -1,8 +1,5 @@
 // main.ts
 //
-// repo   : https://github.com/je-es/cli
-// author : https://github.com/maysara-elshewehy
-//
 // Developed with ❤️ by Maysara.
 
 

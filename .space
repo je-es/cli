@@ -1,0 +1,23 @@
+{
+  "type"        : "lib",
+  "pm"          : "bun",
+
+  "repo"        : {
+    "org"       : "je-es",
+    "name"      : "cli",
+    "version"   : "1.0.7",
+    "desc"      : "Zero-dependency, type-safe CLI framework",
+    "url"       : "https://github.com/je-es/cli",
+    "kw"        : [ "cli", "command-line", "parser", "typescript", "zero-dependency", "framework" ],
+    "license"   : "MIT"
+  },
+
+  "author"      : {
+    "id"        : "maysara-elshewehy",
+    "name"      : "Maysara",
+    "url"       : "https://github.com/maysara-elshewehy",
+    "email"     : "maysara.elshewehy@gmail.com"
+  },
+
+  "createdAt"   : "2025-11-27T06:49:05.625Z"
+}

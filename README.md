@@ -8,11 +8,10 @@
 </div>
 
 <div align="center">
-    <img src="https://img.shields.io/badge/v-1.0.6-black"/>
+    <img src="https://img.shields.io/badge/v-1.0.7-black"/>
     <a href="https://github.com/maysara-elshewehy">
     </a>
-    <a href="https://github.com/je-es"><img src="https://img.shields.io/badge/@-je--es-black"/></a>
-    <a href="https://github.com/maysara-elshewehy"><img src="https://img.shields.io/badge/by-Maysara-black"/></a>
+    <a href="https://github.com/je-es/cli"> <img src="https://img.shields.io/badge/🔥-@je--es/cli-black"/> </a>
 </div>
 
 <div align="center">
@@ -27,15 +26,11 @@
 <!-- ╔══════════════════════════════ DOC ══════════════════════════════╗ -->
 
 
-- ## Install
+- ## Quick Start 🔥
 
     ```bash
-    npm install @je-es/cli
+    space i @je-es/cli
     ```
-
-    <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> <br> </div>
-
-- ## Quick Start
 
     ```typescript
     import { cli } from '@je-es/cli';
@@ -421,7 +416,7 @@
 </div>
 <br>
 <div align="center">
-    <a href="https://github.com/maysara-elshewehy"><img src="https://img.shields.io/badge/by-Maysara-black"/></a>
+    <a href="https://github.com/solution-lib/space"><img src="https://img.shields.io/badge/by-Space-black"/></a>
 </div>
 
 <!-- ╚═════════════════════════════════════════════════════════════════╝ -->
