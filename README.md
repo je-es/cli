@@ -61,15 +61,15 @@
 
     ```typescript
     .command({
-    name                  : 'create',
-    aliases               : ['c', 'new'],             # short names
-    description           : 'Create project',         # shown in help
-    args                  : [...],                    # positional arguments
-    options               : [...],                    # flags and options
-    allowDynamicArgs      : true,                     # allow unknown arguments
-    allowDynamicOptions   : true,                     # allow unknown options
-    action                : (parsed) => { ... },      # command handler
-    examples              : ['myapp create foo']      # usage examples
+        name                  : 'create',
+        aliases               : ['c', 'new'],             # short names
+        description           : 'Create project',         # shown in help
+        args                  : [...],                    # positional arguments
+        options               : [...],                    # flags and options
+        allowDynamicArgs      : true,                     # allow unknown arguments
+        allowDynamicOptions   : true,                     # allow unknown options
+        action                : (parsed) => { ... },      # command handler
+        examples              : ['myapp create foo']      # usage examples
     })
     ```
 
@@ -79,13 +79,13 @@
 
     ```typescript
     args: [
-    {
-        name            : 'project',
-        required        : true,                 # mandatory argument
-        description     : 'Project name',
-        default         : 'myapp',              # fallback value
-        validate        : (v) => v.length > 0 || 'Name required'
-    }
+        {
+            name            : 'project',
+            required        : true,                 # mandatory argument
+            description     : 'Project name',
+            default         : 'myapp',              # fallback value
+            validate        : (v) => v.length > 0 || 'Name required'
+        }
     ]
     ```
 
@@ -95,15 +95,15 @@
 
     ```typescript
     options: [
-    {
-        name            : 'type',
-        flag            : '-t',                 # short form
-        aliases         : ['--type'],           # long form
-        type            : 'string',             # string | number | boolean
-        required        : true,
-        default         : 'npm',
-        validate: (v) => ['npm','yarn'].includes(v) || 'Invalid type'
-    }
+        {
+            name            : 'type',
+            flag            : '-t',                 # short form
+            aliases         : ['--type'],           # long form
+            type            : 'string',             # string | number | boolean
+            required        : true,
+            default         : 'npm',
+            validate: (v) => ['npm','yarn'].includes(v) || 'Invalid type'
+        }
     ]
     ```
 
@@ -191,15 +191,15 @@
     ```typescript
     # Argument validation
     args: [{
-    name      : 'port',
-    validate  : (v) => Number(v) > 0 || 'Port must be positive'
+        name      : 'port',
+        validate  : (v) => Number(v) > 0 || 'Port must be positive'
     }]
 
     # Option validation
     options: [{
-    name      : 'env',
-    flag      : '--env',
-    validate  : (v) => ['dev','prod'].includes(v) || 'Invalid env'
+        name      : 'env',
+        flag      : '--env',
+        validate  : (v) => ['dev','prod'].includes(v) || 'Invalid env'
     }]
     ```
 
@@ -209,9 +209,9 @@
 
     ```typescript
     options: [
-    { name: 'port', flag: '-p', type: 'number' },    # "3000" → 3000
-    { name: 'verbose', flag: '-v', type: 'boolean' }, # flag → true
-    { name: 'name', flag: '-n', type: 'string' }      # default
+        { name: 'port', flag: '-p', type: 'number' },    # "3000" → 3000
+        { name: 'verbose', flag: '-v', type: 'boolean' }, # flag → true
+        { name: 'name', flag: '-n', type: 'string' }      # default
     ]
     ```
 
@@ -245,15 +245,15 @@
     ```typescript
     # Command aliases
     .command({
-    name      : 'create',
-    aliases   : ['c', 'new', 'init']
+        name      : 'create',
+        aliases   : ['c', 'new', 'init']
     })
 
     # Option aliases
     options: [{
-    name      : 'force',
-    flag      : '-f',
-    aliases   : ['--force', '--overwrite']
+        name      : 'force',
+        flag      : '-f',
+        aliases   : ['--force', '--overwrite']
     }]
     ```
 
@@ -275,9 +275,9 @@
 
     .command({
     name: 'deploy',
-    action: async () => {
-        throw new CLIError('Deployment failed', 'DEPLOY_ERROR');
-    }
+        action: async () => {
+            throw new CLIError('Deployment failed', 'DEPLOY_ERROR');
+        }
     })
     ```
 
@@ -309,12 +309,12 @@
 
         ```typescript
         .command({
-        name      : 'person',
-        args      : [
-            { name: 'name', required: true },
-            { name: 'age', required: true, validate: (v) => !isNaN(Number(v)) }
-        ],
-        action    : ({ args }) => { console.log(`${args.name}, ${args.age} years old`); }
+            name      : 'person',
+            args      : [
+                { name: 'name', required: true },
+                { name: 'age', required: true, validate: (v) => !isNaN(Number(v)) }
+            ],
+            action    : ({ args }) => { console.log(`${args.name}, ${args.age} years old`); }
         })
         ```
 
@@ -326,14 +326,14 @@
 
         ```typescript
         .command({
-        name      : 'start',
-        options   : [{
-            name        : 'port',
-            flag        : '-p',
-            type        : 'number',
-            validate    : (v) => v >= 1000 && v <= 9999 || 'Port must be 1000-9999'
-        }],
-        action    : ({ options }) => { console.log(`Starting on port ${options.port}`); }
+            name      : 'start',
+            options   : [{
+                name        : 'port',
+                flag        : '-p',
+                type        : 'number',
+                validate    : (v) => v >= 1000 && v <= 9999 || 'Port must be 1000-9999'
+            }],
+            action    : ({ options }) => { console.log(`Starting on port ${options.port}`); }
         })
         ```
 
