@@ -8,10 +8,10 @@
 </div>
 
 <div align="center">
-    <img src="https://img.shields.io/badge/v-1.0.7-black"/>
+    <img src="https://img.shields.io/badge/v-1.0.8-black"/>
     <a href="https://github.com/maysara-elshewehy">
     </a>
-    <a href="https://github.com/je-es/cli"> <img src="https://img.shields.io/badge/🔥-@je--es/cli-black"/> </a>
+    <a href="https://github.com/je-es"> <img src="https://img.shields.io/badge/@-je--es-black"/> </a>
 </div>
 
 <div align="center">

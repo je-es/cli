@@ -1,6 +1,6 @@
-// main.ts
+// src/main.ts
 //
-// Developed with ❤️ by Maysara.
+// Made with ❤️ by Maysara.
 
 
 

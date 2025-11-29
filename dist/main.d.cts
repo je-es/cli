@@ -1,6 +1,6 @@
-// types.d.ts
+// src/types.d.ts
 //
-// Developed with ❤️ by Maysara.
+// Made with ❤️ by Maysara.
 
 
 

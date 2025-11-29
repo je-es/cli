@@ -5,28 +5,27 @@
         "**/.hg": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        "**/CVS": true,
-        "tsup.config.ts": true,
-        "tsconfig.json": true,
         "eslint.config.mjs": true,
         "bun.lock": true,
         "LICENSE": true,
         ".gitignore": true,
         ".gitattributes": true,
         ".npmignore": true,
+        "node_modules": true,
         ".vscode": true,
-        "node_modules": true
+        "tsconfig.json": true,
+        "tsup.config.ts": true
     },
     "hide-files.files": [
-        "tsup.config.ts",
-        "tsconfig.json",
         "eslint.config.mjs",
         "bun.lock",
         "LICENSE",
         ".gitignore",
         ".gitattributes",
         ".npmignore",
+        "node_modules",
         ".vscode",
-        "node_modules"
+        "tsconfig.json",
+        "tsup.config.ts"
     ]
 }
