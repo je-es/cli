@@ -42,7 +42,7 @@
     space start <args>
     ```
 
-    <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> <br> </div>
+    <br>
 
 
 - ## Examples
@@ -104,7 +104,7 @@
         myapp start -p 999     # ✗ validation error
         ```
 
-    <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> <br> </div>
+    <br>
 
 - ## Docs
 
@@ -333,8 +333,6 @@
             }
         })
         ```
-
-        <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> <br> </div>
 
 <!-- ╚═════════════════════════════════════════════════════════════════╝ -->
 
