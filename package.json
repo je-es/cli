@@ -1,6 +1,6 @@
 {
 	"name"                             : "@je-es/cli",
-	"version"                          : "1.0.9",
+	"version"                          : "1.1.0",
 	"description"                      : "Build faster | Sleep better",
 	"keywords"                         : ["je-es", "cli"],
 	"license"                          : "MIT",
@@ -36,7 +36,6 @@
 		"bun"                          : ">=1.3.3"
 	},
 	"dependencies"                     : {
-		"@je-es/cli"                   : "^1.0.7"
 	},
 	"devDependencies"                  : {
 		"@eslint/js"                   : "^9.34.0",
