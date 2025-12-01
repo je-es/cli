@@ -67,6 +67,8 @@
         git commit "fix bug" -a
         ```
 
+        <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> <br> </div>
+
     - ### Multiple Arguments
 
         ```typescript
@@ -83,6 +85,8 @@
         ```bash
         myapp person "John Doe" 30
         ```
+
+        <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> <br> </div>
 
     - ### With Validation
 
