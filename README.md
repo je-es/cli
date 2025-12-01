@@ -39,7 +39,11 @@
     ```
 
     ```bash
-    space start <args>
+    # example
+     > space start create MyApp -t web
+    
+    # output
+      Creating MyApp as web
     ```
 
     <br>
