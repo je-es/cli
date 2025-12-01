@@ -34,7 +34,7 @@
     ```
 
     ```bash
-    cd my_cli
+    cd <app-name>
     space install
     ```
 
