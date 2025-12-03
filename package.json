@@ -1,6 +1,6 @@
 {
 	"name"                             : "@je-es/cli",
-	"version"                          : "1.1.1",
+	"version"                          : "1.1.2",
 	"description"                      : "Build faster | Sleep better",
 	"keywords"                         : ["je-es", "cli"],
 	"license"                          : "MIT",
@@ -44,7 +44,7 @@
 	"devDependencies"                  : {
 		"@eslint/js"                   : "^9.34.0",
 		"@stylistic/eslint-plugin"     : "^5.3.1",
-		"@types/bun"                   : "^1.1.13",
+		"@types/bun"                   : "^1.1.23",
 		"@types/node"                  : "^20.12.7",
 		"bun-plugin-dts"               : "^0.3.0",
 		"bun-types"                    : "^1.1.38",

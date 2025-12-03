@@ -83,7 +83,7 @@
     }
 
 declare class CLI {
-    private config;
+    config: CLIConfig;
     private commands;
     private globalOptions;
     private parser;
