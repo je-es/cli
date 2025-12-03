@@ -83,6 +83,8 @@
         git commit "fix bug" -a
         ```
 
+        <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> <br> </div>
+
     - ### Multiple Arguments
 
         ```typescript
@@ -99,6 +101,8 @@
         ```bash
         myapp person "John Doe" 30
         ```
+
+        <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> <br> </div>
 
     - ### With Validation
 
@@ -120,7 +124,7 @@
         myapp start -p 999     # ✗ validation error
         ```
 
-    <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> <br> </div>
+    <br>
 
 - ## Docs
 
@@ -350,8 +354,6 @@
         })
         ```
 
-        <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> <br> </div>
-
 <!-- ╚═════════════════════════════════════════════════════════════════╝ -->
 
 
@@ -359,11 +361,9 @@
 <!-- ╔══════════════════════════════ END ══════════════════════════════╗ -->
 
 <br>
-<div align="center">
-    <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/>
-    <br>
-</div>
-<br>
+
+---
+
 <div align="center">
     <a href="https://github.com/solution-lib/space"><img src="https://img.shields.io/badge/by-Space-black"/></a>
 </div>
