@@ -28,7 +28,11 @@
 			"require"                  : "./dist/main.js"
 		}
 	},
-	"scripts"                          : {},
+	"scripts"                          : {
+        "build"                        : "tsup",
+        "lint"                         : "eslint src --ext .ts",
+        "test"                         : "bun test"
+	},
 	"engines"                          : {
 		"bun"                          : ">=1.3.3"
 	},
