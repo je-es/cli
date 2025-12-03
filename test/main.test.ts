@@ -253,7 +253,7 @@
                         flag: '-t',
                         type: 'string',
                         required: true,
-                        validate: (val) => ['npm', 'yarn'].includes(val) || 'Invalid type'
+                        validate: (val) => ['npm', 'yarn'].includes(val as string) || 'Invalid type'
                         }
                     ],
                     action: mock(() => {})

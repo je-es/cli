@@ -1,6 +1,6 @@
 {
 	"name"                             : "@je-es/cli",
-	"version"                          : "1.1.0",
+	"version"                          : "1.1.1",
 	"description"                      : "Build faster | Sleep better",
 	"keywords"                         : ["je-es", "cli"],
 	"license"                          : "MIT",

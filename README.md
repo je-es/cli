@@ -8,10 +8,12 @@
 </div>
 
 <div align="center">
-    <img src="https://img.shields.io/badge/v-1.1.0-black"/>
-    <a href="https://github.com/maysara-elshewehy">
-    </a>
-    <a href="https://github.com/je-es"> <img src="https://img.shields.io/badge/@-je--es-black"/> </a>
+    <img src="https://img.shields.io/badge/v-1.1.1-black"/>
+    <a href="https://github.com/je-es"> <img src="https://img.shields.io/badge/🔥-@je--es-black"/> </a>
+    <br>
+    <img src="https://github.com/je-es/cli/actions/workflows/ci.yml/badge.svg" alt="CI" />
+    <img src="https://img.shields.io/github/issues/je-es/cli?style=flat" alt="Github Repo Issues" />
+    <img src="https://img.shields.io/github/stars/je-es/cli?style=social" alt="GitHub Repo stars" />
 </div>
 <br>
 
@@ -27,22 +29,36 @@
 
     > _**The simplest, fastest, most organized and stable way to build command line applications.**_
 
-    > _We prefer to use [`space`](https://github.com//solution-lib/space) with [`@solution-dist/cli`](https://github.com/solution-dist/cli) for a better experience._
+    - #### Setup
 
-    ```bash
-    space init <app-name> -t cli
-    ```
+        > install [`space`](https://github.com/solution-lib/space) first.
 
-    ```bash
-    cd my_cli
-    space install
-    ```
+        - ##### Create
 
-    ```bash
-    space start <args>
-    ```
+            ```bash
+            > space init <name> -t cli    # This will clone this repo and make some changes to suit your app.
+            > cd <name>                   # Go to the project directory
+            > space install               # Install the dependencies
+            ```
 
-    <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> <br> </div>
+        - ##### Manage
+
+            ```bash
+            > space lint          # To lint  your app
+            > space build         # To build your app
+            > space test          # To test  your app
+            > space start <args>  # To start your app
+            ```
+
+            ```bash
+            # example
+                > space start create MyApp -t web
+
+            # output
+                Creating MyApp as web
+            ```
+
+        <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> <br> </div>
 
 
 - ## Examples
