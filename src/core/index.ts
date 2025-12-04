@@ -283,7 +283,7 @@
                 }
 
                 // Parse options
-                const dynamicOptions: Record<string, string | boolean | number> = {};
+                const dynamicOptions: Record<string, string | boolean> = {};
                 const optionIndices = new Set<number>();
 
                 if (command.options) {

@@ -51,7 +51,7 @@
         options         : Record<string, string | boolean | number>;
 
         dynamicArgs?    : string[];
-        dynamicOptions? : Record<string, string | boolean | number>;
+        dynamicOptions? : Record<string, string | boolean>;
     }
 
 // ╚══════════════════════════════════════════════════════════════════════════════════════╝
