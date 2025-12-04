@@ -47,8 +47,48 @@
                 const app = cli('test', '1.0.0')
                     .description('Test CLI')
                     .command({
-                    name: 'hello',
-                    action: () => console.log('Hello')
+                        name: 'hello',
+                        action: () => console.log('Hello')
+                    })
+                    .build();
+
+                expect(app).toBeInstanceOf(CLI);
+            });
+
+            test('should add global options', () => {
+                const app = cli('test', '1.0.0')
+                    .globalOption({
+                        name: 'verbose',
+                        flag: '-v',
+                        type: 'boolean',
+                        description: 'Verbose output'
+                    })
+                    .globalOption({
+                        name: 'config',
+                        flag: '-c',
+                        type: 'string',
+                        description: 'Config file'
+                    })
+                    .build();
+
+                expect(app).toBeInstanceOf(CLI);
+            });
+
+            test('should chain all builder methods together', () => {
+                const app = cli('test', '1.0.0')
+                    .description('Full featured CLI')
+                    .globalOption({
+                        name: 'debug',
+                        flag: '--debug',
+                        type: 'boolean'
+                    })
+                    .command({
+                        name: 'start',
+                        action: () => {}
+                    })
+                    .command({
+                        name: 'stop',
+                        action: () => {}
                     })
                     .build();
 
@@ -61,8 +101,8 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'hello',
-                    action
+                        name: 'hello',
+                        action
                     })
                     .build();
 
@@ -74,9 +114,9 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'create',
-                    args: [{ name: 'name', required: true }],
-                    action
+                        name: 'create',
+                        args: [{ name: 'name', required: true }],
+                        action
                     })
                     .build();
 
@@ -91,13 +131,13 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'create',
-                    args: [{ name: 'name', required: true }],
-                    options: [
-                        { name: 'force', flag: '-f', type: 'boolean', default: false },
-                        { name: 'type', flag: '-t', type: 'string' }
-                    ],
-                    action
+                        name: 'create',
+                        args: [{ name: 'name', required: true }],
+                        options: [
+                            { name: 'force', flag: '-f', type: 'boolean', default: false },
+                            { name: 'type', flag: '-t', type: 'string' }
+                        ],
+                        action
                     })
                     .build();
 
@@ -112,12 +152,12 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'create',
-                    args: [{ name: 'name', required: true }],
-                    options: [
-                        { name: 'force', flag: '--force', type: 'boolean', default: false }
-                    ],
-                    action
+                        name: 'create',
+                        args: [{ name: 'name', required: true }],
+                        options: [
+                            { name: 'force', flag: '--force', type: 'boolean', default: false }
+                        ],
+                        action
                     })
                     .build();
 
@@ -132,12 +172,12 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'create',
-                    args: [{ name: 'name', required: true }],
-                    options: [
-                        { name: 'type', flag: '--type', type: 'string' }
-                    ],
-                    action
+                        name: 'create',
+                        args: [{ name: 'name', required: true }],
+                        options: [
+                            { name: 'type', flag: '--type', type: 'string' }
+                        ],
+                        action
                     })
                     .build();
 
@@ -152,9 +192,9 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'create',
-                    aliases: ['c', 'new'],
-                    action
+                        name: 'create',
+                        aliases: ['c', 'new'],
+                        action
                     })
                     .build();
 
@@ -170,18 +210,18 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'create',
-                    args: [{ name: 'name', required: true }],
-                    options: [
-                        {
-                        name: 'force',
-                        flag: '-f',
-                        aliases: ['--force'],
-                        type: 'boolean',
-                        default: false
-                        }
-                    ],
-                    action
+                        name: 'create',
+                        args: [{ name: 'name', required: true }],
+                        options: [
+                            {
+                                name: 'force',
+                                flag: '-f',
+                                aliases: ['--force'],
+                                type: 'boolean',
+                                default: false
+                            }
+                        ],
+                        action
                     })
                     .build();
 
@@ -197,9 +237,9 @@
             test('should throw error for missing required argument', async () => {
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'create',
-                    args: [{ name: 'name', required: true }],
-                    action: mock(() => {})
+                        name: 'create',
+                        args: [{ name: 'name', required: true }],
+                        action: mock(() => {})
                     })
                     .build();
 
@@ -210,12 +250,12 @@
             test('should throw error for missing required option', async () => {
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'create',
-                    args: [{ name: 'name', required: true }],
-                    options: [
-                        { name: 'type', flag: '-t', type: 'string', required: true }
-                    ],
-                    action: mock(() => {})
+                        name: 'create',
+                        args: [{ name: 'name', required: true }],
+                        options: [
+                            { name: 'type', flag: '-t', type: 'string', required: true }
+                        ],
+                        action: mock(() => {})
                     })
                     .build();
 
@@ -226,15 +266,15 @@
             test('should validate argument with custom validator', async () => {
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'create',
-                    args: [
-                        {
-                        name: 'name',
-                        required: true,
-                        validate: (val) => val.length > 3 || 'Name must be longer than 3 characters'
-                        }
-                    ],
-                    action: mock(() => {})
+                        name: 'create',
+                        args: [
+                            {
+                                name: 'name',
+                                required: true,
+                                validate: (val) => val.length > 3 || 'Name must be longer than 3 characters'
+                            }
+                        ],
+                        action: mock(() => {})
                     })
                     .build();
 
@@ -245,18 +285,18 @@
             test('should validate option with custom validator', async () => {
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'create',
-                    args: [{ name: 'name', required: true }],
-                    options: [
-                        {
-                        name: 'type',
-                        flag: '-t',
-                        type: 'string',
-                        required: true,
-                        validate: (val) => ['npm', 'yarn'].includes(val as string) || 'Invalid type'
-                        }
-                    ],
-                    action: mock(() => {})
+                        name: 'create',
+                        args: [{ name: 'name', required: true }],
+                        options: [
+                            {
+                                name: 'type',
+                                flag: '-t',
+                                type: 'string',
+                                required: true,
+                                validate: (val) => ['npm', 'yarn'].includes(val as string) || 'Invalid type'
+                            }
+                        ],
+                        action: mock(() => {})
                     })
                     .build();
 
@@ -268,11 +308,11 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'create',
-                    args: [
-                        { name: 'name', required: false, default: 'myproject' }
-                    ],
-                    action
+                        name: 'create',
+                        args: [
+                            { name: 'name', required: false, default: 'myproject' }
+                        ],
+                        action
                     })
                     .build();
 
@@ -287,12 +327,12 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'create',
-                    args: [{ name: 'name', required: true }],
-                    options: [
-                        { name: 'force', flag: '-f', type: 'boolean', default: false }
-                    ],
-                    action
+                        name: 'create',
+                        args: [{ name: 'name', required: true }],
+                        options: [
+                            { name: 'force', flag: '-f', type: 'boolean', default: false }
+                        ],
+                        action
                     })
                     .build();
 
@@ -306,9 +346,9 @@
             test('should throw error for unknown options when dynamic options disabled', async () => {
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'test',
-                    allowDynamicOptions: false,
-                    action: mock(() => {})
+                        name: 'test',
+                        allowDynamicOptions: false,
+                        action: mock(() => {})
                     })
                     .build();
 
@@ -319,14 +359,53 @@
             test('should throw error for extra positional args when dynamic args disabled', async () => {
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'test',
-                    args: [{ name: 'name', required: true }],
-                    allowDynamicArgs: false,
-                    action: mock(() => {})
+                        name: 'test',
+                        args: [{ name: 'name', required: true }],
+                        allowDynamicArgs: false,
+                        action: mock(() => {})
                     })
                     .build();
 
                 await app.run(['test', 'arg1', 'arg2']);
+                expect(exitSpy).toHaveBeenCalledWith(1);
+            });
+
+            test('should handle argument validation returning false', async () => {
+                const app = cli('test', '1.0.0')
+                    .command({
+                        name: 'test',
+                        args: [
+                            {
+                                name: 'value',
+                                required: true,
+                                validate: (val) => val.length > 5
+                            }
+                        ],
+                        action: mock(() => {})
+                    })
+                    .build();
+
+                await app.run(['test', 'abc']);
+                expect(exitSpy).toHaveBeenCalledWith(1);
+            });
+
+            test('should handle option validation returning false', async () => {
+                const app = cli('test', '1.0.0')
+                    .command({
+                        name: 'test',
+                        options: [
+                            {
+                                name: 'port',
+                                flag: '-p',
+                                type: 'number',
+                                validate: (val) => (val as number) > 1000
+                            }
+                        ],
+                        action: mock(() => {})
+                    })
+                    .build();
+
+                await app.run(['test', '-p', '500']);
                 expect(exitSpy).toHaveBeenCalledWith(1);
             });
         });
@@ -336,11 +415,11 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'test',
-                    options: [
-                        { name: 'port', flag: '-p', type: 'number' }
-                    ],
-                    action
+                        name: 'test',
+                        options: [
+                            { name: 'port', flag: '-p', type: 'number' }
+                        ],
+                        action
                     })
                     .build();
 
@@ -354,11 +433,11 @@
             test('should throw error for invalid number', async () => {
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'test',
-                    options: [
-                        { name: 'port', flag: '-p', type: 'number' }
-                    ],
-                    action: mock(() => {})
+                        name: 'test',
+                        options: [
+                            { name: 'port', flag: '-p', type: 'number' }
+                        ],
+                        action: mock(() => {})
                     })
                     .build();
 
@@ -370,11 +449,11 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'test',
-                    options: [
-                        { name: 'verbose', flag: '-v', type: 'boolean', default: false }
-                    ],
-                    action
+                        name: 'test',
+                        options: [
+                            { name: 'verbose', flag: '-v', type: 'boolean', default: false }
+                        ],
+                        action
                     })
                     .build();
 
@@ -391,10 +470,29 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'exec',
-                    args: [{ name: 'command', required: true }],
-                    allowDynamicArgs: true,
-                    action
+                        name: 'exec',
+                        args: [{ name: 'command', required: true }],
+                        allowDynamicArgs: true,
+                        action
+                    })
+                    .build();
+
+                await app.run(['exec', 'node', 'script.js', 'arg1']);
+                expect(action).toHaveBeenCalledWith({
+                    args: { command: 'node' },
+                    options: {},
+                    dynamicArgs: ['script.js', 'arg1']
+                });
+            });
+
+            test('should capture dynamic arguments with options mixed in', async () => {
+                const action = mock(() => {});
+                const app = cli('test', '1.0.0')
+                    .command({
+                        name: 'exec',
+                        args: [{ name: 'command', required: true }],
+                        allowDynamicArgs: true,
+                        action
                     })
                     .build();
 
@@ -410,10 +508,10 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'exec',
-                    args: [{ name: 'command', required: true }],
-                    allowDynamicOptions: true,
-                    action
+                        name: 'exec',
+                        args: [{ name: 'command', required: true }],
+                        allowDynamicOptions: true,
+                        action
                     })
                     .build();
 
@@ -429,14 +527,14 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'exec',
-                    args: [{ name: 'command', required: true }],
-                    options: [
-                        { name: 'cwd', flag: '--cwd', type: 'string' }
-                    ],
-                    allowDynamicArgs: true,
-                    allowDynamicOptions: true,
-                    action
+                        name: 'exec',
+                        args: [{ name: 'command', required: true }],
+                        options: [
+                            { name: 'cwd', flag: '--cwd', type: 'string' }
+                        ],
+                        allowDynamicArgs: true,
+                        allowDynamicOptions: true,
+                        action
                     })
                     .build();
 
@@ -453,13 +551,13 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'run',
-                    options: [
-                        { name: 'verbose', flag: '-v', type: 'boolean', default: false },
-                        { name: 'config', flag: '-c', type: 'string' }
-                    ],
-                    allowDynamicOptions: true,
-                    action
+                        name: 'run',
+                        options: [
+                            { name: 'verbose', flag: '-v', type: 'boolean', default: false },
+                            { name: 'config', flag: '-c', type: 'string' }
+                        ],
+                        allowDynamicOptions: true,
+                        action
                     })
                     .build();
 
@@ -475,11 +573,11 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'exec',
-                    args: [{ name: 'command', required: true }],
-                    allowDynamicArgs: true,
-                    allowDynamicOptions: true,
-                    action
+                        name: 'exec',
+                        args: [{ name: 'command', required: true }],
+                        allowDynamicArgs: true,
+                        allowDynamicOptions: true,
+                        action
                     })
                     .build();
 
@@ -496,15 +594,15 @@
                 const action = mock(() => {});
                 const app = cli('docker', '1.0.0')
                     .command({
-                    name: 'run',
-                    args: [{ name: 'image', required: true }],
-                    options: [
-                        { name: 'detach', flag: '-d', type: 'boolean', default: false },
-                        { name: 'name', flag: '--name', type: 'string' }
-                    ],
-                    allowDynamicArgs: true,
-                    allowDynamicOptions: true,
-                    action
+                        name: 'run',
+                        args: [{ name: 'image', required: true }],
+                        options: [
+                            { name: 'detach', flag: '-d', type: 'boolean', default: false },
+                            { name: 'name', flag: '--name', type: 'string' }
+                        ],
+                        allowDynamicArgs: true,
+                        allowDynamicOptions: true,
+                        action
                     })
                     .build();
 
@@ -554,12 +652,12 @@
             test('should show command-specific help', async () => {
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'create',
-                    description: 'Create a project',
-                    args: [{ name: 'name', required: true, description: 'Project name' }],
-                    options: [
-                        { name: 'force', flag: '-f', description: 'Force creation' }
-                    ]
+                        name: 'create',
+                        description: 'Create a project',
+                        args: [{ name: 'name', required: true, description: 'Project name' }],
+                        options: [
+                            { name: 'force', flag: '-f', description: 'Force creation' }
+                        ]
                     })
                     .build();
 
@@ -570,11 +668,11 @@
             test('should show dynamic indicators in help', async () => {
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'exec',
-                    description: 'Execute command',
-                    args: [{ name: 'command', required: true }],
-                    allowDynamicArgs: true,
-                    allowDynamicOptions: true
+                        name: 'exec',
+                        description: 'Execute command',
+                        args: [{ name: 'command', required: true }],
+                        allowDynamicArgs: true,
+                        allowDynamicOptions: true
                     })
                     .build();
 
@@ -585,14 +683,35 @@
                 expect(helpOutput).toContain('additional arguments allowed');
                 expect(helpOutput).toContain('additional options allowed');
             });
+
+            test('should show help when no command provided and no commands registered', async () => {
+                const app = cli('test', '1.0.0')
+                    .description('Test CLI without commands')
+                    .build();
+
+                await app.run([]);
+                expect(exitSpy).toHaveBeenCalledWith(1);
+            });
+
+            test('should show help when no command provided but commands exist', async () => {
+                const app = cli('test', '1.0.0')
+                    .command({
+                        name: 'start',
+                        action: mock(() => {})
+                    })
+                    .build();
+
+                await app.run([]);
+                expect(consoleSpy).toHaveBeenCalled();
+            });
         });
 
         describe('Error Handling', () => {
             test('should throw CommandNotFoundError for unknown command', async () => {
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'create',
-                    action: mock(() => {})
+                        name: 'create',
+                        action: mock(() => {})
                     })
                     .build();
 
@@ -603,15 +722,30 @@
             test('should handle async action errors', async () => {
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'test',
-                    action: async () => {
-                        throw new Error('Test error');
-                    }
+                        name: 'test',
+                        action: async () => {
+                            throw new Error('Test error');
+                        }
                     })
                     .build();
 
                 await app.run(['test']);
                 expect(exitSpy).toHaveBeenCalledWith(1);
+            });
+
+            test('should handle non-Error exceptions', async () => {
+                const app = cli('test', '1.0.0')
+                    .command({
+                        name: 'test',
+                        action: async () => {
+                            throw 'String error';
+                        }
+                    })
+                    .build();
+
+                await app.run(['test']);
+                expect(exitSpy).toHaveBeenCalledWith(1);
+                expect(consoleErrorSpy).toHaveBeenCalledWith('An unknown error occurred');
             });
         });
 
@@ -620,16 +754,16 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'person',
-                    args: [
-                        { name: 'name', required: true },
-                        { name: 'age', required: true }
-                    ],
-                    options: [
-                        { name: 'career', flag: '--career', type: 'string', required: true },
-                        { name: 'force', flag: '-f', type: 'boolean', default: false }
-                    ],
-                    action
+                        name: 'person',
+                        args: [
+                            { name: 'name', required: true },
+                            { name: 'age', required: true }
+                        ],
+                        options: [
+                            { name: 'career', flag: '--career', type: 'string', required: true },
+                            { name: 'force', flag: '-f', type: 'boolean', default: false }
+                        ],
+                        action
                     })
                     .build();
 
@@ -644,12 +778,12 @@
                 const action = mock(() => {});
                 const app = cli('test', '1.0.0')
                     .command({
-                    name: 'test',
-                    options: [
-                        { name: 'verbose', flag: '-v', type: 'boolean', default: false },
-                        { name: 'output', flag: '--output', type: 'string' }
-                    ],
-                    action
+                        name: 'test',
+                        options: [
+                            { name: 'verbose', flag: '-v', type: 'boolean', default: false },
+                            { name: 'output', flag: '--output', type: 'string' }
+                        ],
+                        action
                     })
                     .build();
 
@@ -657,6 +791,73 @@
                 expect(action).toHaveBeenCalledWith({
                     args: {},
                     options: { verbose: true, output: 'result.txt' }
+                });
+            });
+
+            test('should handle command without action', async () => {
+                const app = cli('test', '1.0.0')
+                    .command({
+                        name: 'noop',
+                        description: 'Command with no action'
+                    })
+                    .build();
+
+                await app.run(['noop']);
+                expect(exitSpy).not.toHaveBeenCalled();
+            });
+
+            test('should handle version flag with command that uses -v option', async () => {
+                const action = mock(() => {});
+                const app = cli('test', '1.0.0')
+                    .command({
+                        name: 'build',
+                        options: [
+                            { name: 'verbose', flag: '-v', type: 'boolean', default: false }
+                        ],
+                        action
+                    })
+                    .build();
+
+                await app.run(['build', '-v']);
+                expect(action).toHaveBeenCalledWith({
+                    args: {},
+                    options: { verbose: true }
+                });
+                expect(consoleSpy).not.toHaveBeenCalledWith('test v1.0.0');
+            });
+
+            test('should handle version flag before command', async () => {
+                const action = mock(() => {});
+                const app = cli('test', '1.0.0')
+                    .command({
+                        name: 'build',
+                        action
+                    })
+                    .build();
+
+                await app.run(['-v', 'build']);
+                expect(consoleSpy).toHaveBeenCalledWith('test v1.0.0');
+                expect(action).not.toHaveBeenCalled();
+            });
+        });
+
+        describe('Parser Edge Cases', () => {
+            test('should handle negative numbers as arguments not as options', async () => {
+                const action = mock(() => {});
+                const app = cli('test', '1.0.0')
+                    .command({
+                        name: 'calc',
+                        args: [{ name: 'value', required: true }],
+                        allowDynamicArgs: true,
+                        action
+                    })
+                    .build();
+
+                await app.run(['calc', '-42', '-100']);
+                expect(action).toHaveBeenCalledWith({
+                    args: { value: '-42' },
+                    options: {},
+                    dynamicArgs: ['-100'],
                 });
             });
         });
