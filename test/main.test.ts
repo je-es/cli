@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // test/main.test.ts
 //
 // Made with ❤️ by Maysara.
@@ -6,7 +7,7 @@
 
 // ╔════════════════════════════════════════ PACK ════════════════════════════════════════╗
 
-    import { describe, test, expect, beforeEach, afterEach, mock } from 'bun:test'
+    import { describe, test, expect, beforeEach, afterEach, mock } from 'bun:test';
     import { cli, CLI } from '../src/main';
 
 // ╚══════════════════════════════════════════════════════════════════════════════════════╝
